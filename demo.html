@@ -1,0 +1,61 @@
+<!doctype html>
+<!-- Copyright (c) 2014 Google Inc. All rights reserved. -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Google Analytics Polymer Elements Demo</title>
+  <script src="../platform/platform.js"></script>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:700,400,300">
+  <link rel="stylesheet" href="demo.css" shim-shadowdom>
+  <link rel="import" href="../google-signin/google-signin.html">
+  <link rel="import" href="google-analytics.html">
+</head>
+<body unresolved>
+
+  <header>
+    <h1>Google Analytics <em>Polymer Elements Demo</em></h1>
+    <google-signin
+      clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com"
+      scopes="https://www.googleapis.com/auth/analytics.readonly">
+    </google-signin>
+  </header>
+
+  <google-analytics-dashboard>
+
+    <google-analytics-view-selector></google-analytics-view-selector>
+    <google-analytics-date-selector></google-analytics-date-selector>
+
+    <google-analytics-chart
+      type="area"
+      metrics="ga:sessions"
+      dimensions="ga:date">
+      <h3>Site Traffic</h3>
+    </google-analytics-chart>
+
+    <google-analytics-chart
+      type="column"
+      metrics="ga:avgPageLoadTime"
+      dimensions="ga:date">
+      <h3>Average Page Load Times</h3>
+    </google-analytics-chart>
+
+    <google-analytics-chart
+      type="geo"
+      metrics="ga:users"
+      dimensions="ga:country">
+      <h3>Users by Country</h3>
+    </google-analytics-chart>
+
+    <google-analytics-chart
+      type="pie"
+      metrics="ga:pageviews"
+      dimensions="ga:browser"
+      sort="-ga:pageviews"
+      maxResults="5">
+      <h3>Pageviews by Browser</h3>
+    </google-analytics-chart>
+
+  </google-analytics-dashboard>
+
+</body>
+</html>

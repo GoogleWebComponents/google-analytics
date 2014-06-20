@@ -1,0 +1,27 @@
+{
+  "name": "google-analytics",
+  "version": "0.0.1",
+  "authors": [
+    "Philip Walton <philip@philipwalton.com>"
+  ],
+  "description": "Encapsulates Google Analytics dashboard features into web components",
+  "main": "google-analytics.html",
+  "license": "Apache2",
+  "homepage": "http://googlewebcomponents.github.io/google-analytics",
+  "keywords": [
+    "google analytics",
+    "analytics",
+    "dashboard",
+    "polymer",
+    "web-components"
+  ],
+  "ignore": [
+    "**/.*"
+  ],
+  "dependencies": {
+    "google-signin": "GoogleWebComponents/google-signin#master",
+    "google-chart": "GoogleWebComponents/google-chart#master",
+    "native-promise-only": "~0.4.1-g",
+    "polymer": "Polymer/polymer#~0.3.3"
+  }
+}
