@@ -1,4 +1,4 @@
 google-analytics
 ================
 
-Google Analytics web components
+See the [component landing page](http://googlewebcomponents.github.io/google-analytics) for more information.
