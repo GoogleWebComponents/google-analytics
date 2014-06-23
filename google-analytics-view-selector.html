@@ -81,34 +81,6 @@ Element for selecting the view ID (ids) value for queries inside a
          * @event analytics-dashboard-control-change
          */
 
-
-        /**
-         * The `accounts` attribute is used to populate the `<option>`
-         * elements in the account `<select>`.
-         *
-         * @attribute accounts
-         * @type Array
-         */
-        accounts: [],
-
-        /**
-         * The `properties` attribute is used to populate the `<option>`
-         * elements in the property `<select>`.
-         *
-         * @attribute properties
-         * @type Array
-         */
-        properties: [],
-
-        /**
-         * The `views` attribute is used to populate the `<option>` elements
-         * in the view `<select>`.
-         *
-         * @attribute views
-         * @type Array
-         */
-        views: [],
-
         /**
          * The `ids` attribute, when found is used to preselect the choosen
          * account, property, and view.
@@ -118,7 +90,6 @@ Element for selecting the view ID (ids) value for queries inside a
          * @attribute ids
          * @type string
          */
-        ids: null,
 
         accountIndex: 0,
 
@@ -126,7 +97,14 @@ Element for selecting the view ID (ids) value for queries inside a
 
         viewIndex: 0,
 
-        authorized: function(data) {
+        ready: function() {
+          this.accounts = [];
+          this.properties = [];
+          this.views = [];
+        },
+
+        userAuthorized: function(data) {
+          this.super();
 
           accountSummaries.get().then(function(accounts) {
             this.accounts = accounts;
@@ -141,7 +119,9 @@ Element for selecting the view ID (ids) value for queries inside a
           }.bind(this));
         },
 
-        unauthorized: function() {
+        userUnauthorized: function() {
+          this.super();
+
           this.accountIndex = null;
           this.propertyIndex = null;
           this.viewIndex = null;

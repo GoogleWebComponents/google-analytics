@@ -77,7 +77,7 @@ google-analytics-chart {
   position: relative;
   transition: opacity .2s ease;
 }
-google-analytics-chart[unrendered] {
+google-analytics-chart:not([rendered]) {
   display: none;
 }
 

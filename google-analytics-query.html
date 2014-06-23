@@ -64,7 +64,6 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute data
          * @type object
          */
-        data: null,
 
         /**
          * The `ids` attribute is the unique table ID of the form ga:XXXX,
@@ -78,7 +77,6 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute ids
          * @type string
          */
-        ids: null,
 
         /**
          * The `startDate` attribute is the start date for fetching Analytics
@@ -117,7 +115,6 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute metrics
          * @type string
          */
-        metrics: null,
 
         /**
          * The `dimensions` attribute is a list of comma-separated dimensions
@@ -128,7 +125,6 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute dimensions
          * @type string
          */
-        dimensions: null,
 
         /**
          * The `sort` attribute is a list of comma-separated dimensions
@@ -140,7 +136,6 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute sort
          * @type string
          */
-        sort: null,
 
         /**
          * The `filters` attribute is dimension or metric filters that restrict
@@ -151,7 +146,6 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute filters
          * @type string
          */
-        filters: null,
 
         /**
          * The `segment` attribute segments the data returned for your
@@ -162,7 +156,6 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute segment
          * @type string
          */
-        segment: null,
 
         /**
          * The `samplingLevel` attribute sets the desired sampling level.
@@ -173,7 +166,6 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute samplingLevel
          * @type string
          */
-        samplingLevel: null,
 
         /**
          * The `startIndex` attribute sets the first row of data to retrieve,
@@ -185,7 +177,6 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute startIndex
          * @type integer
          */
-        startIndex: null,
 
         /**
          * The `maxResults` attribute is the maximum number of rows to include
@@ -196,7 +187,6 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute maxResults
          * @type integer
          */
-        maxResults: null,
 
         /**
          * The `output` attribute sets the desired output type for the
@@ -208,7 +198,6 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute output
          * @type string
          */
-        output: null,
 
         /**
          * The `fields` attribute is a selector specifying a subset of
@@ -219,7 +208,6 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute fields
          * @type string
          */
-        fields: null,
 
         observe: {
           ids: 'getData',
@@ -237,15 +225,13 @@ Element for querying the Google Analytics Core Reporting API.
           fields: 'getData'
         },
 
-        get isValid() {
-          return !!(this.ids && this.metrics && this.startDate && this.endDate);
-        },
-
-        authorized: function() {
+        userAuthorized: function() {
+          this.super();
           this.getData();
         },
 
-        unauthorized: function() {
+        userUnauthorized: function() {
+          this.super();
           this.data = null;
         },
 
@@ -255,8 +241,7 @@ Element for querying the Google Analytics Core Reporting API.
          * @method getData
          */
         getData: function() {
-
-          if (this.isAuthorized && this.isValid) {
+          if (this.authorized && this.hasRequiredParams) {
 
             // Required paramters.
             var query = {
@@ -298,7 +283,11 @@ Element for querying the Google Analytics Core Reporting API.
             this.data = response;
             this.fire('analytics-query-success', response);
           }
-        }
+        },
+
+        get hasRequiredParams() {
+          return !!(this.ids && this.metrics && this.startDate && this.endDate);
+        },
 
       });
 

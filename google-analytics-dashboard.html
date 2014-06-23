@@ -44,29 +44,18 @@ update query parameters.
 
     Polymer('google-analytics-dashboard', {
 
-      /**
-       * The `query` attribute represents the internal query object of this
-       * dashboard. It is updated when control elements fire the
-       * `analytics-dashboard-control-change` event and pass along query data.
-       *
-       * @attribute query
-       * @type object
-       */
-      query: {},
-
       ready: function() {
-        this.unauthorized(); // Assume unauthorized state at first.
-      },
+        /**
+         * The `query` attribute represents the internal query object of this
+         * dashboard. It is updated when control elements fire the
+         * `analytics-dashboard-control-change` event and pass along query data.
+         *
+         * @attribute query
+         * @type object
+         */
+        this.query = {};
 
-      authorized: function() {
-        this.removeAttribute('unauthorized');
-        this.setAttribute('authorized', '');
         this.updateChildren();
-      },
-
-      unauthorized: function() {
-        this.removeAttribute('authorized');
-        this.setAttribute('unauthorized', '');
       },
 
       /**
@@ -83,7 +72,7 @@ update query parameters.
           this.query[key] = event.detail[key];
         }.bind(this))
 
-        if (this.isAuthorized) this.updateChildren();
+        this.updateChildren();
       },
 
       /**

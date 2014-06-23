@@ -89,6 +89,7 @@ Google Chart.
          * for the options available to each chart type.
          *
          * @attribute options
+         * @default null
          * @type object
          */
         options: null,
@@ -97,19 +98,43 @@ Google Chart.
 
         data: null,
 
+        publish: {
+          /**
+           * True after the chart has been rendered for the first time.
+           *
+           * @attribute rendered
+           * @type boolean
+           */
+          rendered: {
+            value: false,
+            reflect: true
+          },
+          /**
+           * True if the chart is currently loading data.
+           *
+           * @attribute loading
+           * @type boolean
+           */
+          loading: {
+            value: false,
+            reflect: true
+          }
+        },
+
         ready: function() {
-          this.setAttribute('unrendered', '');
           merge(this.$.chart.options, getChartOptions(this.type), this.options);
         },
 
-        authorized: function() {
+        userAuthorized: function() {
+          this.super();
+
           // Get metadata as soon as possible so we don't have to wait later.
           metadata.get();
         },
 
         getData: function() {
           if (this.super()) {
-            this.setAttribute('pending', '');
+            this.loading = true;
           }
         },
 
@@ -118,8 +143,8 @@ Google Chart.
             this.fire('analytics-query-error', response.error);
           }
           else {
-            this.removeAttribute('unrendered');
-            this.removeAttribute('pending');
+            this.loading = false;
+            this.rendered = true;
 
             metadata.get().then(function(map) {
               switchApiNamesToDisplayNames(response.dataTable, map);
@@ -286,7 +311,7 @@ Google Chart.
        * @return {Object} The merged target object.
        */
       function merge(target) {
-        var sources = [].slice.call(arguments, 1);
+        var sources = Array.prototype.slice.call(arguments, 1);
         sources.forEach(function(source) {
           // Only merge objects.
           if (!(source && typeof sources == 'object')) return;

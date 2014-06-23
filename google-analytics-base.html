@@ -23,9 +23,6 @@ intended to be used by itself. It is only intended to be subclassed.
 
     (function() {
 
-      var isLoaded = false;
-      var isAuthorized = false;
-
       /**
        * A promise that is resolved when the underlying client libraries are
        * loaded. It is rejected if there are any load errors.
@@ -34,7 +31,6 @@ intended to be used by itself. It is only intended to be subclassed.
         document.addEventListener('google-api-load', function fn(event) {
           var lib = event.detail;
           if (lib.name == 'analytics' && lib.version == 'v3') {
-            isLoaded = true;
             resolve(event.detail);
             document.removeEventListener('google-api-load', fn);
           }
@@ -56,60 +52,50 @@ intended to be used by itself. It is only intended to be subclassed.
 
       Polymer('google-analytics-base', {
 
-        /**
-         * The `isLoaded` attribute is true when the underlying analytics
-         * library is fully loaded.
-         *
-         * @attribute isLoaded
-         * @type boolean
-         */
-        get isLoaded() {
-          return isLoaded;
-        },
-
-        /**
-         * The `isAuthorized` attribute is true once the user successfully
-         * signs in <em>and</em> the libraries have been loaded. If the user
-         * signs out this will be false.
-         *
-         * @attribute isAuthorized
-         * @type boolean
-         */
-        get isAuthorized() {
-          return isAuthorized;
+        publish: {
+          /**
+           * The `authorized` attribute is true when the user has signed-in and
+           * the underlying analytics library is fully loaded.
+           *
+           * @attribute authorized
+           * @type boolean
+           */
+          authorized: {
+            value: false,
+            reflect: true
+          }
         },
 
         created: function() {
           document.addEventListener('google-signin-success', function(event) {
-            isAuthorized = true;
-            loadPromise.then(this.authorized.bind(this, event.detail.result));
+            loadPromise
+                .then(this.userAuthorized.bind(this,event.detail.result));
           }.bind(this));
           document.addEventListener('google-signed-out', function(event) {
-            isAuthorized = false;
-            this.unauthorized();
+            this.userUnauthorized();
           }.bind(this));
         },
 
         /**
-         * The `authorized` method will be invoked when the user has
+         * The `userAuthorized` method will be invoked when the user has
          * successfully signed in and all the underlying client libraries
          * have been loaded.
          *
-         * @method authorized
+         * @method userAuthorized
          * @param {Object} data - The auth data information.
          */
-        authorized: function(data) {
-          // Override in a subclass.
+        userAuthorized: function(data) {
+          this.authorized = true;
         },
 
         /**
-         * The `unauthorized` method will be invoked when the user has
+         * The `userUnauthorized` method will be invoked when the user has
          * successfully signed out.
          *
-         * @method unauthorized
+         * @method userUnauthorized
          */
-        unauthorized: function() {
-          // Override in a subclass.
+        userUnauthorized: function() {
+          this.authorized = false;
         }
 
       });
