@@ -94,8 +94,6 @@ Google Chart.
          */
         options: null,
 
-        output: 'dataTable',
-
         data: null,
 
         publish: {
@@ -138,6 +136,11 @@ Google Chart.
           }
         },
 
+        beforeQuerySend: function(query) {
+          query.output = 'dataTable';
+          query._src = 'gwc-ga-chart';
+        },
+
         handleResponse: function(response) {
           if (response.error) {
             this.fire('analytics-query-error', response.error);
@@ -164,7 +167,10 @@ Google Chart.
         function queryMetadataAPI() {
           return new Promise(function(resolve, reject) {
             gapi.client.analytics.metadata.columns
-                .list({reportType:'ga'})
+                .list({
+                  reportType: 'ga',
+                  _src: 'gwc-ga-chart'
+                })
                 .execute(function(response) {
                   if (response.error) {
                     reject(response.error);

@@ -230,7 +230,10 @@ Element for selecting the view ID (ids) value for queries inside a
             var summaries = [];
             function makeRequest(startIndex) {
               gapi.client.analytics.management.accountSummaries
-                  .list({'start-index': startIndex || 1})
+                  .list({
+                    'start-index': startIndex || 1,
+                    '_src': 'gwc-ga-view-selector'
+                  })
                   .execute(ensureComplete);
             }
             function ensureComplete(resp) {
