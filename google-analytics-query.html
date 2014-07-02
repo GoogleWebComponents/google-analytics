@@ -262,6 +262,8 @@ Element for querying the Google Analytics Core Reporting API.
             if (this.output) query.output = this.output;
             if (this.fields) query.fields = this.fields;
 
+            this.beforeQuerySend(query);
+
             gapi.client.analytics.data.ga.get(query)
                 .execute(this.handleResponse.bind(this));
 
@@ -283,6 +285,18 @@ Element for querying the Google Analytics Core Reporting API.
             this.data = response;
             this.fire('analytics-query-success', response);
           }
+        },
+
+        /**
+         * A hook to alter the query params object (if needed) before
+         * the request is made. This method allows subclasses to change the
+         * request without overriding the entire `getData` method.
+         *
+         * @method beforeQuerySend
+         * @param {Object} query - The query params object.
+         */
+        beforeQuerySend: function(query) {
+          query._src = 'gwt-ga-query';
         },
 
         get hasRequiredParams() {
