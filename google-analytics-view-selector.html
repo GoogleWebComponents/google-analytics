@@ -27,7 +27,7 @@ Element for selecting the view ID (ids) value for queries inside a
 <polymer-element
   name="google-analytics-view-selector"
   extends="google-analytics-base"
-  attributes="ids">
+  attributes="accounts properties views ids">
 
   <template>
     <style>
@@ -89,6 +89,38 @@ Element for selecting the view ID (ids) value for queries inside a
          *
          * @attribute ids
          * @type string
+         */
+
+        /**
+         * The `accounts` attribute contains an array of accounts this user has
+         * access to. Each account contains the properties within that account
+         * and each property contains the views within that property.
+         * Once this value is initially set, it does not change regardless of
+         * what account the user has selected.
+         *
+         * See the <a href="https://developers.google.com/analytics/devguides/config/mgmt/v3/mgmtAccountSummariesGuide">Management API's accountSummaries methods</a> for more details.
+         *
+         * @attribute accounts
+         * @type Array
+         */
+
+        /**
+         * The `properties` attribute contains the properties for the currently
+         * selected account. Each property contains the views within that
+         * property. This value changes when the user selects a different
+         * account.
+         *
+         * @attribute properties
+         * @type Array
+         */
+
+        /**
+         * The `views` attribute contains the views for the currently
+         * selected property. This value changes when the user selects a
+         * different property.
+         *
+         * @attribute views
+         * @type Array
          */
 
         accountIndex: 0,
