@@ -26,9 +26,9 @@
     "../"
   ],
   "dependencies": {
-    "google-signin": "GoogleWebComponents/google-signin#master",
-    "google-chart": "GoogleWebComponents/google-chart#master",
+    "google-signin": "GoogleWebComponents/google-signin#~0.1.0",
+    "google-chart": "GoogleWebComponents/google-chart#~0.0.1",
     "native-promise-only": "~0.4.1-g",
-    "polymer": "Polymer/polymer#~0.3.3"
+    "polymer": "Polymer/polymer#~0.4.0"
   }
 }
