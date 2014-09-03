@@ -1,0 +1,343 @@
+<link rel="import" href="google-analytics-base.html">
+
+<!--
+Element for selecting the view ID (ids) value for queries inside a
+`<google-analytics-dashboard>` element.
+
+##### Example
+
+    <google-analytics-dashboard>
+
+      <google-analytics-view-selector></google-analytics-view-selector>
+
+      <google-analytics-chart
+        metrics="ga:sessions"
+        dimensions="ga:date">
+      </google-analytics-chart>
+
+    </google-analytics-dashboard>
+
+@element google-analytics-view-selector
+@extends google-analytics-base
+@blurb Element for selecting the ids value for Google Analytics queries
+@status alpha
+@homepage http://googlewebcomponents.github.io/google-analytics
+-->
+
+<polymer-element
+  name="google-analytics-view-selector"
+  extends="google-analytics-base"
+  attributes="accounts properties views ids">
+
+  <template>
+    <style>
+      select {
+        color: inherit;
+        font: inherit;
+        margin: 0;
+      }
+    </style>
+    <span class="control">
+      <label for="account">Account</label>
+      <select id="account"
+        on-change="{{changeAccount}}"
+        selectedIndex="{{accountIndex}}">
+        <template repeat="{{account,i in accounts}}">
+          <option value="{{i}}">{{account.name}}</option>
+        </template>
+      </select>
+    </span>
+    <span class="control">
+      <label>Property</label>
+      <select id="property"
+        on-change="{{changeProperty}}"
+        selectedIndex="{{propertyIndex}}">
+        <template repeat="{{property,i in properties}}">
+          <option value="{{i}}">{{property.name}}</option>
+        </template>
+      </select>
+    </span>
+    <span class="control">
+      <label>View</label>
+      <select id="view"
+        on-change="{{changeView}}"
+        selectedIndex="{{viewIndex}}">
+        <template repeat="{{view,i in views}}">
+          <option value="{{i}}">{{view.name}}</option>
+        </template>
+      </select>
+    </span>
+  </template>
+
+  <script>
+
+    (function() {
+
+      Polymer('google-analytics-view-selector', {
+        /**
+         * Fired when the users changes the view
+         *
+         * @param {Object} query The updated query params.
+         * @event analytics-dashboard-control-change
+         */
+
+        /**
+         * The `ids` attribute, when found is used to preselect the choosen
+         * account, property, and view.
+         *
+         * See the <a href="https://developers.google.com/analytics/devguides/reporting/core/v3/reference#ids">Core Reporting API parameter reference</a> for more details.
+         *
+         * @attribute ids
+         * @type string
+         */
+
+        /**
+         * The `accounts` attribute contains an array of accounts this user has
+         * access to. Each account contains the properties within that account
+         * and each property contains the views within that property.
+         * Once this value is initially set, it does not change regardless of
+         * what account the user has selected.
+         *
+         * See the <a href="https://developers.google.com/analytics/devguides/config/mgmt/v3/mgmtAccountSummariesGuide">Management API's accountSummaries methods</a> for more details.
+         *
+         * @attribute accounts
+         * @type Array
+         */
+
+        /**
+         * The `properties` attribute contains the properties for the currently
+         * selected account. Each property contains the views within that
+         * property. This value changes when the user selects a different
+         * account.
+         *
+         * @attribute properties
+         * @type Array
+         */
+
+        /**
+         * The `views` attribute contains the views for the currently
+         * selected property. This value changes when the user selects a
+         * different property.
+         *
+         * @attribute views
+         * @type Array
+         */
+
+        accountIndex: 0,
+
+        propertyIndex: 0,
+
+        viewIndex: 0,
+
+        ready: function() {
+          this.accounts = [];
+          this.properties = [];
+          this.views = [];
+        },
+
+        userAuthorized: function(data) {
+          this.super();
+
+          accountSummaries.get().then(function(accounts) {
+            this.accounts = accounts;
+            this.properties = this.accounts[0].properties;
+            this.views = this.properties[0].views;
+
+            if (this.ids) {
+              this.idsChanged();
+            } else {
+              this.ids = this.views[0].ids;
+            }
+          }.bind(this));
+        },
+
+        userUnauthorized: function() {
+          this.super();
+
+          this.accountIndex = null;
+          this.propertyIndex = null;
+          this.viewIndex = null;
+          this.accounts = [];
+          this.properties = [];
+          this.views = [];
+        },
+
+        /**
+         * The `changeAccount` method is bound to the change event on the
+         * account `<select>`. It updates the property and view `<select>`s based
+         * on the new account data. It also updates the `ids` attribute.
+         *
+         * @method changeAccount
+         */
+        changeAccount: function() {
+          this.accountIndex = +this.$.account.value;
+          this.propertyIndex = 0;
+          this.viewIndex = 0;
+
+          this.properties = this.accounts[this.accountIndex].properties;
+          this.views = this.properties[this.propertyIndex].views;
+
+          this.ids = this.views[this.viewIndex].ids;
+        },
+
+        /**
+         * The `changeProperty` method is bound to the change event on the
+         * property `<select>`. It updates the view `<select>` based
+         * on the new property data. It also updates the `ids` attribute.
+         *
+         * @method changeProperty
+         */
+        changeProperty: function() {
+          this.propertyIndex = +this.$.property.value;
+          this.viewIndex = 0;
+
+          this.views = this.properties[this.propertyIndex].views;
+
+          this.ids = this.views[this.viewIndex].ids;
+        },
+
+        /**
+         * The `changeView` method is bound to the change event on the
+         * view `<select>`. It updates the `ids` attribute.
+         *
+         * @method changeView
+         */
+        changeView: function() {
+          this.viewIndex = +this.$.view.value;
+
+          this.ids = this.views[this.viewIndex].ids;
+        },
+
+        idsChanged: function() {
+          this.updateSelectedItems();
+
+          this.fire('analytics-dashboard-control-change', {ids: this.ids});
+        },
+
+        /**
+         * The `updateSelectedItems` is used to update the selected items in
+         * the individual selects when the `ids` changes.
+         *
+         * @method updateSelectedItems
+         */
+        updateSelectedItems: function() {
+          if (!this.accounts) return;
+
+          for (var i = 0, account; account = this.accounts[i]; i++) {
+            for (var j = 0, property;
+                property = this.accounts[i].properties[j]; j++) {
+              for (var k = 0, view;
+                  view = this.accounts[i].properties[j].views[k]; k++) {
+                if (view.ids == this.ids) {
+                  this.accountIndex = i;
+                  this.propertyIndex = j;
+                  this.viewIndex = k;
+                  this.properties = this.accounts[i].properties;
+                  this.views = this.properties[j].views;
+                  return;
+                }
+              }
+            }
+          }
+        }
+      });
+
+
+      /**
+       * @module accountSummaries
+       */
+      var accountSummaries = (function() {
+
+        var promise;
+
+        /**
+         * Make a request to the Management API's accountSummaries#list method.
+         * If the requests returns a partial, paginated response, query again
+         * until the full summaries are retrieved.
+         * @return {Promise} A promise that will be resolved once all requests
+         *   are complete.
+         */
+        function requestAccountSummaries() {
+          return new Promise(function(resolve, reject) {
+            var summaries = [];
+            function makeRequest(startIndex) {
+              gapi.client.analytics.management.accountSummaries
+                  .list({
+                    'start-index': startIndex || 1,
+                    '_src': 'gwc-ga-view-selector'
+                  })
+                  .execute(ensureComplete);
+            }
+            function ensureComplete(resp) {
+              // Reject the promise if the API returns an error.
+              if (resp.error) return reject(new Error(resp.message));
+
+              if (resp.items) summaries = summaries.concat(resp.items);
+              if (resp.startIndex + resp.itemsPerPage <= resp.totalResults) {
+                makeRequest(resp.startIndex + resp.itemsPerPage);
+              }
+              else {
+                resolve(summaries);
+              }
+            }
+            makeRequest();
+          });
+        }
+
+        /**
+         * Loop through the full account summaries array and create a new array
+         * the only contains the account, property, and view names and their
+         * children. Also exclude accounts with no properties as well as
+         * properties with no views.
+         * @param {Array} oldSummaries The account summaries array in the form
+         *   return by the Management API.
+         * @return {Array} The trimmed-down account summaries.
+         */
+        function trimAccountSummaries(oldSummaries) {
+          var newSummaries = [];
+          oldSummaries.forEach(function(item) {
+            var account = {name: item.name, properties: []};
+            var properties = item.webProperties || [];
+            properties.forEach(function(item) {
+              var property = {name: item.name, views: []};
+              var views = item.profiles || [];
+              views.forEach(function(item) {
+                var view = {name: item.name, ids: 'ga:' + item.id};
+                property.views.push(view);
+              });
+              // Only add the property if it has views.
+              if (property.views.length) {
+                account.properties.push(property);
+              }
+            });
+            // Only add the account if it has properties.
+            if (account.properties.length) {
+              newSummaries.push(account);
+            }
+          });
+          return newSummaries;
+        }
+
+        return {
+          /**
+           * Return the `requestAccountSummaries` promise. If the promise
+           * exists, return it to avoid multiple requests. If the promise does
+           * not exist, initiate the request and cache the promise.
+           */
+          get: function() {
+            return promise || (promise =
+              requestAccountSummaries()
+                .then(trimAccountSummaries)
+                .catch(function(err) {
+                  console.error(err.stack || err);
+                })
+              );
+          }
+        };
+      }());
+
+    }());
+
+  </script>
+
+</polymer-element>

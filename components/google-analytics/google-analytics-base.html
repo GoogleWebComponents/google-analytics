@@ -1,0 +1,107 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="promise-import.html">
+
+<!--
+The base element for other google analytics elements. This element is not
+intended to be used by itself. It is only intended to be subclassed.
+
+@element google-analytics-base
+@blurb Base element for other google analytics elements
+@status alpha
+@homepage http://googlewebcomponents.github.io/google-analytics
+-->
+
+<polymer-element name="google-analytics-base">
+  <template>
+    <google-api-loader
+      name="analytics"
+      version="v3">
+    </google-api-loader>
+  </template>
+
+  <script>
+
+    (function() {
+
+      /**
+       * A promise that is resolved when the underlying client libraries are
+       * loaded. It is rejected if there are any load errors.
+       */
+      var loadPromise = new Promise(function(resolve, reject) {
+        document.addEventListener('google-api-load', function fn(event) {
+          var lib = event.detail;
+          if (lib.name == 'analytics' && lib.version == 'v3') {
+            resolve(event.detail);
+            document.removeEventListener('google-api-load', fn);
+          }
+        });
+        document.addEventListener('google-api-load-error', function fn(event) {
+          var lib = event.detail;
+          if (lib.name == 'analytics' && lib.version == 'v3') {
+            reject(event.detail.error);
+            document.removeEventListener('google-api-load-error', fn);
+          }
+        });
+      });
+
+      // Log any errors loading the client library.
+      loadPromise.catch(function(err) {
+        console.error(err.stack || err);
+      })
+
+
+      Polymer('google-analytics-base', {
+
+        publish: {
+          /**
+           * The `authorized` attribute is true when the user has signed-in and
+           * the underlying analytics library is fully loaded.
+           *
+           * @attribute authorized
+           * @type boolean
+           */
+          authorized: {
+            value: false,
+            reflect: true
+          }
+        },
+
+        created: function() {
+          document.addEventListener('google-signin-success', function(event) {
+            loadPromise
+                .then(this.userAuthorized.bind(this,event.detail.result));
+          }.bind(this));
+          document.addEventListener('google-signed-out', function(event) {
+            this.userUnauthorized();
+          }.bind(this));
+        },
+
+        /**
+         * The `userAuthorized` method will be invoked when the user has
+         * successfully signed in and all the underlying client libraries
+         * have been loaded.
+         *
+         * @method userAuthorized
+         * @param {Object} data - The auth data information.
+         */
+        userAuthorized: function(data) {
+          this.authorized = true;
+        },
+
+        /**
+         * The `userUnauthorized` method will be invoked when the user has
+         * successfully signed out.
+         *
+         * @method userUnauthorized
+         */
+        userUnauthorized: function() {
+          this.authorized = false;
+        }
+
+      });
+
+    }());
+
+  </script>
+
+</polymer-element>

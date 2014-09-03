@@ -1,0 +1,790 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../google-apis/google-apis.html">
+<link rel="import" href="../core-signals/core-signals.html">
+<link rel="import" href="../paper-focusable/paper-focusable.html">
+<link rel="import" href="../paper-ripple/paper-ripple.html">
+
+<!--
+Copyright (c) 2014 Google Inc. All rights reserved.
+
+LICENSE: github.com/GoogleWebComponents/google-signin/blob/master/LICENSE
+AUTHOR(s): Addy Osmani, Gerwin Sturm, Rob Dodson, and Randy Merrill.
+-->
+
+<!--
+&lt;google-signin&gt; is used to authenticate with Google, allowing you to interact
+with other Google APIs such as Drive and Google+.
+
+<img style="max-width:100%;" src="https://camo.githubusercontent.com/89a3787e89437c885e3244e0e36cc15042bc3ec4/687474703a2f2f692e696d6775722e636f6d2f534a58574e30772e706e67"/>
+
+#### Examples
+
+    <google-signin clientId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
+
+    <google-signin labelSignin="Sign-in" clientId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
+
+    <google-signin theme="dark" width="iconOnly" clientId="..." scopes="https://www.googleapis.com/auth/drive"></google-signin>
+
+#### Notes
+
+The attribute `clientId` is provided in your Google Developers Console
+(https://console.developers.google.com).
+
+The `scopes` attribute allows you to specify which scope permissions are required
+(e.g do you want to allow interaction with the Google Drive API). Many APIs also
+need to be enabled in the Google Developers Console before you can use them.
+The `requestVisibleActions` attribute is necessary if you want to write app
+activities (https://developers.google.com/+/web/app-activities/) on behalf of
+the user. Please note that this attribute is only valid in combination with the
+plus.login scope (https://www.googleapis.com/auth/plus.login).
+
+The `labelSignin` attribute is an optional piece of text used for customizing
+the label on the sign-in button. `labelSignout` allows you to customize the label
+for sign-out, and `labelAdditional` defines the label that is displayed when
+additional permissions are necessary for incremental auth.
+
+The button can be styled in using the `height`, `width`, and `theme` attributes.
+These attributes help you follow the Google+ Sign-In button branding guidelines
+(https://developers.google.com/+/branding-guidelines).
+
+The `google-signin-success` event is triggered when a user successfully authenticates
+and `google-signin-failure` is triggered when this is not the case. Both events
+will also provide the data returned by the Google client authentication process.
+
+Additional events, such as `google-signout-attempted` and `google-signed-out` are
+triggered when the user attempts to sign-out and successfully signs out.
+
+When requesting offline access, the `google-signin-offline` event is triggered when
+the user successfully consents with offline support.
+
+The `google-signin-necessary` event is fired when scopes requested via
+google-signin-aware elements require additional user permissions.
+
+#### Testing
+
+By default, the demo accompanying this element is setup to work on localhost with
+port 8080. That said, you *should* update the `clientId` to your own one for
+any apps you're building. See the Google Developers Console
+(https://console.developers.google.com) for more info.
+
+@class google-signin
+@blurb A Polymer element for authenticating and authorizing with Google Services.
+@status alpha
+@homepage http://googlewebcomponents.github.io/google-signin
+-->
+
+<polymer-element name="google-signin" extends="paper-focusable" attributes="clientId scopes cookiePolicy requestVisibleActions offline width height theme noink labelSignin labelSignout labelAdditional appPackageName">
+    <template>
+        <link rel="import" href="../font-roboto/roboto.html">
+        <style>
+            :host {
+                display: inline-block;
+            }
+
+            .btn {
+                display: inline-block;
+                border-radius: 3px;
+                white-space: nowrap;
+                cursor: pointer;
+                box-shadow: 0 1px 0 rgba(0,0,0,0.10);
+            }
+            .icon {
+                background: transparent no-repeat;
+                background-position: 50% 50%;
+                display: inline-block;
+                vertical-align: middle;
+                width: 35px;
+                height: 35px;
+                background-size: 22px 22px;
+            }
+            .buttonText {
+                display: inline-block;
+                vertical-align: middle;
+                padding-left: 1.5em;
+                padding-right: 1.5em;
+                font-size: 14px;
+                font-weight: 400;
+                font-family: 'Roboto',arial,sans-serif;
+            }
+            .buttonText.short {
+                display: none;
+            }
+
+            /* Ripple */
+            #ripple {
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                pointer-events: none;
+            }
+            #ripple::shadow canvas {
+                top: 0;
+                left: 0;
+            }
+            #clip {
+              position: relative;
+              border-radius: inherit;
+              overflow: hidden;
+            }
+
+            /* Dark Theme */
+            .theme-dark {
+                background: #da4336;
+                color: #fff;
+                border: 1px solid transparent;
+            }
+            .theme-dark .icon {
+                background-image: url('assets/gplus-logo.svg');
+                border-right: #a42613 1px solid;
+            }
+            .theme-dark.signOut {
+                background: #999;
+            }
+            .theme-dark.signOut:hover,
+            .theme-dark.signOut:focus {
+                background: #aaa;
+            }
+            .theme-dark.signOut .icon {
+                border-right: #888 1px solid;
+            }
+            .theme-dark #ripple {
+                color: #c43828;
+            }
+            :host([noink]) .theme-dark:hover,
+            :host([noink]) .theme-dark:focus {
+                background: #e74b37;
+            }
+            :host([noink]) .theme-dark.signOut:hover,
+            :host([noink]) .theme-dark.signOut:focus {
+                background: #aaa;
+            }
+
+            /* Light Theme */
+            .theme-light {
+                background: #fff;
+                color: #737373;
+                border: 1px solid #d9d9d9;
+            }
+            .theme-light .icon {
+                background-image: url('assets/gplus-logo-red.svg');
+                border-right: #d9d9d9 1px solid;
+            }
+            .theme-light.signOut {
+                background: #999;
+                color: #fff;
+            }
+            .theme-light.signOut:hover,
+            .theme-light.signOut:focus {
+                background: #aaa;
+            }
+            .theme-light.signOut .icon {
+                background-image: url('assets/gplus-logo.svg');
+                border-right: #888 1px solid;
+            }
+            .theme-light #ripple {
+                color: #d1d1d1;
+            }
+            :host([noink]) .theme-light:hover,
+            :host([noink]) .theme-light:focus {
+                border: 1px solid #c0c0c0;
+            }
+            :host([noink]) .theme-light.signOut:hover,
+            :host([noink]) .theme-light.signOut:focus {
+                background: #aaa;
+            }
+
+            /* Icon Only Width */
+            .width-iconOnly .buttonText {
+                display: none;
+            }
+            .width-iconOnly .icon {
+                border-right: none;
+            }
+
+            /* Tall Height */
+            .height-tall .buttonText {
+                font-size: 15px;
+                font-weight: 700;
+            }
+
+            .height-tall .icon {
+                width: 46px;
+                height: 46px;
+                background-size: 30px 30px;
+            }
+
+            /* Short Height */
+            .height-short .buttonText {
+                font-size: 11px;
+            }
+
+            .height-short .icon {
+                width: 22px;
+                height: 22px;
+                background-size: 16px 16px;
+            }
+        </style>
+        <google-client-api></google-client-api>
+        <core-signals on-core-signal-google-auth-request="{{authRequest}}"></core-signals>
+        <div id="clip">
+            <paper-ripple id="ripple"></paper-ripple>
+            <template if="{{ !signedIn }}">
+                <div class="btn signIn height-{{height}} width-{{width}} theme-{{theme}}" role="button" tabindex="0"
+                        on-click="{{signIn}}" on-keydown="{{signInKeyPress}}">
+                    <span class="icon"></span>
+                    <span class="buttonText">{{labelSignin}}</span>
+                </div>
+            </template>
+            <template if="{{ signedIn && !additionalAuth }}">
+                <div class="btn signOut height-{{height}} width-{{width}} theme-{{theme}}" role="button" tabindex="0"
+                    on-click="{{signOut}}" on-keydown="{{signOutKeyPress}}">
+                    <span class="icon"></span>
+                    <span class="buttonText">{{labelSignout}}</span>
+                </div>
+            </template>
+            <template if="{{ signedIn && additionalAuth }}">
+                <div class="btn signIn height-{{height}} width-{{width}} theme-{{theme}}" role="button" tabindex="0"
+                        on-click="{{signIn}}" on-keydown="{{signInKeyPress}}">
+                    <span class="icon"></span>
+                    <span class="buttonText">{{labelAdditional}}</span>
+                </div>
+            </template>
+        </div>
+    </template>
+    <script>
+        (function() {
+            var CLIENT_ID = '';
+            var SCOPES = [];
+            var REQUEST_VISIBLE_ACTIONS = '';
+            var COOKIE_POLICY = '';
+
+            var handler;
+            var authorized_scopes = [];
+
+            /**
+             * Enum height values.
+             * @readonly
+             * @enum {string}
+             */
+            var HeightValue = {
+                SHORT: 'short',
+                STANDARD: 'standard',
+                TALL: 'tall'
+            };
+
+            /**
+             * Enum width values.
+             * @readonly
+             * @enum {string}
+             */
+            var WidthValue = {
+                ICON_ONLY: 'iconOnly',
+                STANDARD: 'standard',
+                WIDE: 'wide'
+            };
+
+            /**
+             * Enum theme values.
+             * @readonly
+             * @enum {string}
+             */
+            var ThemeValue = {
+                LIGHT: 'light',
+                DARK: 'dark'
+            };
+
+            /**
+             * Enum button label default values.
+             * @readonly
+             * @enum {string}
+             */
+            var LabelValue = {
+                STANDARD: 'Sign in',
+                WIDE: 'Sign in with Google'
+            };
+
+            /**
+             * Enum of attributes to be passed through to the login API call.
+             * @readonly
+             * @enum {string}
+             */
+            var ProxyLoginAttributes = {
+                'appPackageName': 'apppackagename'
+            };
+
+            /**
+             * Checks whether authorized and requested scopes match and
+             * displays button for additional auth if necessary
+             */
+            function checkScopes() {
+                handler.additionalAuth = false;
+                for (var i = 0; i < SCOPES.length; i++) {
+                    if (SCOPES[i] !== '') {
+                        if (authorized_scopes.indexOf(SCOPES[i].toLowerCase()) < 0) {
+                            handler.additionalAuth = true;
+                            handler.fire('google-signin-necessary');
+                            break;
+                        }
+                    }
+                }
+            }
+
+            /**
+             * Called when authorization server replies.
+             *
+             * @param {Object} authResult Authorization result.
+             * @event google-signin-success
+             */
+
+            /**
+             * Called when an offline authorization is successful.
+             *
+             * @param {string} code Authorization one-time offline code.
+             * @event google-signin-offline
+             */
+
+            /**
+             * Called when the user attempts sign-out.
+             *
+             * @event google-signout-attempted
+             */
+
+            /**
+             * Called when the user is signed-out.
+             *
+             * @param {Object} result Authorization result.
+             * @event google-signed-out
+             */
+
+            /**
+             * Called when the authentication result is complete.
+             *
+             * @param {Object} authResult Authorization result.
+             */
+            function handleAuthResult(authResult) {
+                if (authResult && !authResult.error) {
+                    // Access token has been successfully retrieved
+
+                    // Store authorized scopes to check against for new requests
+                    authorized_scopes = [];
+                    var tmp_scopes = authResult.scope.split(' ');
+                    for (var i = 0; i < tmp_scopes.length; i++) {
+                        if (tmp_scopes[i] !== "") {
+                            authorized_scopes.push(tmp_scopes[i].toLowerCase());
+
+                            // Handle scopes that will be deprecated but are still returned with their old value
+                            if (tmp_scopes[i] === 'https://www.googleapis.com/auth/userinfo.profile') {
+                                authorized_scopes.push('profile');
+                            }
+                            if (tmp_scopes[i] === 'https://www.googleapis.com/auth/userinfo.email') {
+                                authorized_scopes.push('email');
+                            }
+                        }
+                    }
+
+                    // Trigger the google-signin-offline event when offline access code is present
+                    if (handler.offline && authResult.code) {
+                        handler.fire('google-signin-offline', {code: authResult.code});
+                    }
+
+                    // Trigger the google-signin-success event
+                    handler.fire('google-signin-success', {result: authResult, gapi: gapi});
+
+                    // Trigger the google-auth-success core-signal for elements that depend on this
+                    handler.fire('core-signal', {
+                        name: 'google-auth-success',
+                        data: {result: authResult, scopes: authorized_scopes}
+                    });
+
+                    handler.signedIn = true;
+
+                    checkScopes();
+                } else {
+                    if (authResult && authResult.error == "user_signed_out") {
+                        // Fire event to indicate user signed out
+                        handler.fire('google-signed-out', {result: authResult});
+
+                        // Trigger the google-auth-signed-out core-signal for elements that depend on this
+                        handler.fire('core-signal', {
+                            name: 'google-auth-signed-out',
+                            data: {result: authResult}
+                        });
+                    } else {
+                        // Fire event to indicate sign-in was not successful
+                        handler.fire('google-signin-failure', {result: authResult});
+
+                        // Trigger the google-auth-failure core-signal for elements that depend on this
+                        handler.fire('core-signal', {
+                            name: 'google-auth-failure',
+                            data: {result: authResult}
+                        });
+                    }
+
+                    authorized_scopes = [];
+
+                    // No access token could be retrieved, show the button to start the authorization flow.
+                    handler.signedIn = false;
+                }
+
+                handler.flowComplete = true;
+            }
+
+            Polymer('google-signin', {
+                /**
+                 * a Google Developers clientId reference
+                 *
+                 * @attribute clientId
+                 * @type string
+                 */
+                clientId: '',
+                /**
+                 * The scopes to provide access to (e.g https://www.googleapis.com/auth/drive)
+                 * and should be space-delimited.
+                 *
+                 * @attribute scopes
+                 * @type string
+                 * @default 'profile'
+                 */
+                scopes: 'profile',
+                /**
+                 * The cookie policy defines what URIs have access to the session cookie
+                 * remembering the user's sign-in state.
+                 * See the relevant [docs](https://developers.google.com/+/web/signin/reference#determining_a_value_for_cookie_policy) for more information.
+                 *
+                 * @attribute cookiePolicy
+                 * @type string
+                 * @default 'single_host_origin'
+                 */
+                cookiePolicy: 'single_host_origin',
+                /**
+                 * The app activity types you want to write on behalf of the user
+                 * (e.g http://schemas.google.com/AddActivity)
+                 *
+                 * @attribute requestVisibleActions
+                 * @type string
+                 */
+                requestVisibleActions: '',
+                /**
+                 * Allows for offline access_token retrieval during the signin process.
+                 *
+                 * @attribute offline
+                 * @type boolean
+                 * @default false
+                 */
+                offline: false,
+                /**
+                 * App package name for android over-the-air installs.
+                 * See the relevant [docs](https://developers.google.com/+/web/signin/android-app-installs)
+                 *
+                 * @attribute appPackageName
+                 * @type string
+                 * @default ''
+                 */
+                appPackageName: '',
+                /**
+                 * An optional label for the sign-in button.
+                 *
+                 * @attribute labelSignin
+                 * @type string
+                 */
+                labelSignin: '',
+                /**
+                 * An optional label for the sign-out button.
+                 *
+                 * @attribute labelSignout
+                 * @type string
+                 * @default 'Sign out'
+                 */
+                labelSignout: 'Sign out',
+                /**
+                 * An optional label for the button for additional permissions.
+                 *
+                 * @attribute labelAdditional
+                 * @type string
+                 * @default 'Additional permissions required'
+                 */
+                labelAdditional: 'Additional permissions required',
+                /**
+                 * The height to use for the button.
+                 *
+                 * Available options: short, standard, tall.
+                 *
+                 * @attribute height
+                 * @type {HeightValue}
+                 * @default 'standard'
+                 */
+                height: 'standard',
+                /**
+                 * The width to use for the button.
+                 *
+                 * Available options: iconOnly, standard, wide.
+                 *
+                 * @attribute width
+                 * @type {WidthValue}
+                 * @default 'standard'
+                 */
+                width: 'standard',
+                /**
+                 * The theme to use for the button.
+                 *
+                 * Available options: light, dark.
+                 *
+                 * @attribute theme
+                 * @type {HeightValue}
+                 * @default 'dark'
+                 */
+                theme: 'dark',
+
+                /**
+                 * If true, ink ripple effect is disabled.
+                 *
+                 * @attribute noink
+                 * @type boolean
+                 * @default false
+                 */
+                noink: false,
+
+                activeChanged: function() {
+                    this.super();
+
+                    if(this.noink) {
+                        return;
+                    }
+
+                    if (this.active) {
+                        // FIXME: remove when paper-ripple can have a default 'down' state.
+                        if (!this.lastEvent) {
+                            var rect = this.getBoundingClientRect();
+                            this.lastEvent = {
+                                x: rect.left + rect.width / 2,
+                                y: rect.top + rect.height / 2
+                            }
+                        }
+                        this.$.ripple.downAction(this.lastEvent);
+                    } else {
+                        this.$.ripple.upAction();
+                    }
+                },
+
+                attached: function () {
+                    if (this.clientId === '') {
+                        throw "A valid clientId is required to use this element";
+                    }
+
+                    CLIENT_ID = this.clientId;
+                    SCOPES = this.scopes.split(' ');
+                    COOKIE_POLICY = this.cookiePolicy;
+                    REQUEST_VISIBLE_ACTIONS = this.requestVisibleActions;
+                    handler = this;
+
+                    // For page-level configuration the callback has to be in global namespace
+                    window.handleAuthResult = handleAuthResult;
+
+                    var meta = document.createElement('meta');
+                    meta.setAttribute('name', 'google-signin-clientid');
+                    meta.setAttribute('content', CLIENT_ID);
+                    document.head.appendChild(meta);
+
+                    meta = document.createElement('meta');
+                    meta.setAttribute('name', 'google-signin-scope');
+                    meta.setAttribute('content', SCOPES.join(' '));
+                    document.head.appendChild(meta);
+
+                    meta = document.createElement('meta');
+                    meta.setAttribute('name', 'google-signin-cookiepolicy');
+                    meta.setAttribute('content', COOKIE_POLICY);
+                    document.head.appendChild(meta);
+
+                    meta = document.createElement('meta');
+                    meta.setAttribute('name', 'google-signin-callback');
+                    meta.setAttribute('content', 'handleAuthResult');
+                    document.head.appendChild(meta);
+
+                    if (REQUEST_VISIBLE_ACTIONS) {
+                        meta = document.createElement('meta');
+                        meta.setAttribute('name', 'google-signin-requestvisibleactions');
+                        meta.setAttribute('content', REQUEST_VISIBLE_ACTIONS);
+                        document.head.appendChild(meta);
+                    }
+
+                    if (handler.labelSignin === '') {
+                        if (handler.width == WidthValue.WIDE) {
+                            handler.labelSignin = LabelValue.WIDE;
+                        } else if (handler.width == WidthValue.STANDARD) {
+                            handler.labelSignin = LabelValue.STANDARD;
+                        }
+                    }
+                },
+
+                authRequest: function (e, detail, sender) {
+                    var i, new_scopes, extra_scopes;
+                    if (detail) {
+                        // Check if any new scopes need to be authorized
+                        extra_scopes = false;
+                        new_scopes = detail.split(" ");
+                        for (i = 0; i < new_scopes.length; i++) {
+                            if (new_scopes[i] !== "") {
+                                if (authorized_scopes.indexOf(new_scopes[i].toLowerCase()) < 0) {
+                                    extra_scopes = true;
+                                    if (SCOPES.indexOf(new_scopes[i].toLowerCase()) < 0) {
+                                        SCOPES.push(new_scopes[i].toLowerCase());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (extra_scopes) {
+                        if (handler.flowComplete) {
+                            handler.additionalAuth = true;
+                            handler.fire('google-signin-necessary');
+                        }
+                    } else {
+                        handler.fire('core-signal', {
+                            name: 'google-auth-success',
+                            data: {result: gapi.auth.getToken(), scopes: authorized_scopes}
+                        });
+                    }
+                },
+
+                downAction: function(e) {
+                    this.super(e);
+                    this.lastEvent = e;
+                },
+
+                signIn: function () {
+                    handler.flowComplete = false;
+                    var params = {
+                        'clientid': CLIENT_ID,
+                        'cookiepolicy': COOKIE_POLICY,
+                        'scope': SCOPES.join(' '),
+                        'requestvisibleactions': REQUEST_VISIBLE_ACTIONS,
+                        'callback': 'handleAuthResult'
+                    };
+
+                    if (handler.offline) {
+                        params.accesstype = 'offline';
+                        params.redirecturi = 'postmessage';
+                    }
+
+                    // Proxy specific attributes through to the signIn.
+                    Object.keys(ProxyLoginAttributes).forEach(function(key) {
+                        if (handler[key] && handler[key] !== '') {
+                            params[ProxyLoginAttributes[key]] = handler[key];
+                        }
+                    });
+
+                    gapi.auth.signIn(params);
+                },
+
+                signInKeyPress: function (e) {
+                    if (e.which == 13 || e.keyCode == 13 || e.which == 32 || e.keyCode == 32) {
+                        e.preventDefault();
+                        handler.signIn();
+                    }
+                },
+
+                signOut: function () {
+                    handler.flowComplete = false;
+                    handler.fire('google-signout-attempted');
+                    gapi.auth.signOut();
+                },
+
+                signOutKeyPress: function (e) {
+                    if (e.which == 13 || e.keyCode == 13 || e.which == 32 || e.keyCode == 32) {
+                        e.preventDefault();
+                        handler.signOut();
+                    }
+                }
+            });
+        })();
+    </script>
+</polymer-element>
+
+
+<!--
+google-signin-aware is used to enable authentication in custom elements by
+interacting with a google-signin element that needs to be present somewhere
+on the page.
+
+The `scopes` attribute allows you to specify which scope permissions are required
+(e.g do you want to allow interaction with the Google Drive API).
+
+The `google-signin-aware-success` event is triggered when a user successfully
+authenticates. The event will also provide the data returned by the Google client
+authentication process.
+
+The `google-signin-aware-success` event is triggered when a user successfully
+authenticates and `google-signin-aware-failure` is triggered when this is not
+he case. Both events will also provide the data returned by the Google client
+authentication process. The `google-signin-aware-signed-out` event is triggered
+when a user explicitely signs out via the google-signin element.
+
+##### Example
+
+    <google-signin-aware scopes="https://www.googleapis.com/auth/drive"></google-signin-aware>
+
+@class google-signin-aware
+@blurb A Polymer element for authenticating and authorizing with Google Services.
+@status alpha
+@homepage http://googlewebcomponents.github.io/google-signin
+-->
+
+<polymer-element name="google-signin-aware" attributes="scopes">
+    <template>
+        <core-signals on-core-signal-google-auth-success="{{authSuccess}}"></core-signals>
+        <core-signals on-core-signal-google-auth-failure="{{authFailure}}"></core-signals>
+        <core-signals on-core-signal-google-auth-signed-out="{{signedOut}}"></core-signals>
+    </template>
+    <script>
+        (function() {
+            var loader = null;
+
+            Polymer('google-signin-aware', {
+                /**
+                 * The scopes to provide access to (e.g https://www.googleapis.com/auth/drive)
+                 * and should be space-delimited.
+                 *
+                 * @attribute scopes
+                 * @type string
+                 * @default 'profile'
+                 */
+                scopes: '',
+
+                domReady: function() {
+                    this.fire('core-signal', {
+                        name: 'google-auth-request',
+                        data: this.scopes
+                    });
+                },
+
+                authSuccess: function (e, detail) {
+                    // Check if correct scopes authorized, if not do nothing and continue to wait
+                    var complete = false;
+                    if (detail && detail.scopes) {
+                        var scopes = this.scopes.split(' ');
+                        complete = true;
+                        for (var i = 0; i < scopes.length; i++) {
+                            if (scopes[i] !== '' && detail.scopes.indexOf(scopes[i].toLowerCase()) < 0) {
+                                complete = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (complete) {
+                        this.fire('google-signin-aware-success', detail);
+                    }
+                },
+
+                authFailure: function (e, detail) {
+                    this.fire('google-signin-aware-failure', detail);
+                },
+
+                signedOut: function (e, detail) {
+                    this.fire('google-signin-aware-signed-out', detail);
+                }
+            });
+        })();
+    </script>
+</polymer-element>

@@ -1,0 +1,138 @@
+<!doctype html>
+<!-- Copyright (c) 2014 Google Inc. All rights reserved. -->
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <title>google-signin Demo</title>
+
+    <script src="../platform/platform.js"></script>
+    <link rel="import" href="google-signin.html">
+
+    <!-- Demo only styles -->
+    <style>
+      * { font-family: 'RobotoDraft', 'Roboto', sans-serif; line-height:1.2; vertical-align:middle; }
+
+      body {
+        background: rgba(204, 204, 204, 0.31);
+      }
+
+      .card {
+        min-width: 300px;
+        max-width: 400px;
+        padding:1.5rem;
+        box-shadow:0 1px 2px #aaa;
+        background:white;
+        margin:1rem 1rem 1rem;
+        border-radius:3px;
+        user-select:none;
+        transform-origin:top left;
+        position:relative;
+        z-index:2;
+        clear: both;
+      }
+
+      .card:nth-child(even){
+       transform-origin:top right;
+      }
+
+      .map {
+        background: whitesmoke;
+        margin: .5rem -1.5rem 0 -1.5rem;
+        padding: 0.5rem;
+      }
+
+      h1 {
+        font-size:2rem;
+        font-weight:200;
+      }
+
+      h1 strong {
+        font-weight:300;
+        color:#539D00;
+      }
+
+      h2 {
+        font-size:.9rem;
+        line-height:2.5;
+        color:gray;
+        font-weight:400;
+      }
+    </style>
+
+</head>
+
+<body unresolved>
+
+    <p>A `google-signin` element looks like this:</p>
+
+    <h2>Standard button with `profile` scope:</h2>
+    <google-signin clientId="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com" scopes="profile"></google-signin>
+
+    <div>Status:</div>
+    <div id="status">Not logged in.</div>
+
+    <!-- Just for demonstration purposes -->
+    <template id="profile" bind="{{ profile }}">
+    <div class="card">
+        <h1><strong>{{displayName}}</strong></h1>
+        <h2>Is currently signed-in</h2>
+        <div class="map">
+          <p>
+              <strong>Gender</strong> {{gender}}
+          </p>
+          <p>
+              <strong>Skills</strong> {{skills}}
+          </p>
+          <p>
+              <strong>Avatar</strong>
+              <p>
+                  <img src="{{image.url}}" />
+              </p>
+          </p>
+          <p>
+              <strong>G+ URL</strong> <a href="{{url}}">{{url}}</a>
+          </p>
+        </div>
+    </div>
+    </template>
+
+    <script>
+    document.addEventListener("google-signin-success", function(e) {
+        // Access the GAPI instance passed back from authorization
+        var gapi = e.detail.gapi;
+
+        // Load V1 of the G+ API
+        gapi.client.load('plus', 'v1', function() {
+            // To retreive profile information for a user, use the
+            // people.get API method. For profile info for the currently
+            // authorized user, use the userId value of me.
+            var request = gapi.client.plus.people.get({
+                'userId': 'me'
+            });
+
+            request.execute(function(resp) {
+                // Some useful profile information is now available
+                // via the returned object (resp). For example, we
+                // can discover the displayName, skills and so on.
+                console.log(resp);
+
+                // This data can then be rendered into a template:
+                var t = document.querySelector("#profile");
+                t.model = {};
+                t.model.profile = resp;
+            });
+        });
+        document.querySelector("#status").innerHTML = "You are now signed in.";
+    });
+
+    document.addEventListener("google-signed-out", function() {
+        document.querySelector("#status").innerHTML = "You are now signed out.";
+    });
+
+    document.addEventListener("google-signout-attempted", function() {
+        document.querySelector("#status").innerHTML = "You attempted to sign out.";
+    });
+    </script>
+</body>
+</html>
