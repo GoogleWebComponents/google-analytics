@@ -1,6 +1,6 @@
 {
   "name": "google-analytics",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Encapsulates Google Analytics dashboard features into web components",
   "homepage": "http://googlewebcomponents.github.io/google-analytics",
   "authors": [
@@ -9,13 +9,12 @@
   "main": "google-analytics.html",
   "license": "Apache2",
   "keywords": [
-    "google analytics",
+    "google",
     "analytics",
     "dashboard",
     "polymer",
     "web-component",
-    "web-components",
-    "google"
+    "web-components"
   ],
   "ignore": [
     "**/.*",
@@ -26,9 +25,9 @@
     "../"
   ],
   "dependencies": {
-    "google-signin": "GoogleWebComponents/google-signin#~0.1.0",
-    "google-chart": "GoogleWebComponents/google-chart#~0.0.1",
-    "native-promise-only": "~0.4.1-g",
-    "polymer": "Polymer/polymer#~0.4.0"
+    "es6-promise": "^2.0.0",
+    "google-chart": "GoogleWebComponents/google-chart#^0.1.0",
+    "google-signin": "GoogleWebComponents/google-signin#^0.1.0",
+    "polymer": "Polymer/polymer#^0.5.0"
   }
 }
