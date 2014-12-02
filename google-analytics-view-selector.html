@@ -191,13 +191,12 @@ Element for selecting the view ID (ids) value for queries inside a
 
 
       accountChanged: function(oldAccount, newAccount) {
-        this.property = newAccount && newAccount.properties
-            && newAccount.properties[0];
+        this.property = Path.get('properties[0]').getValueFrom(newAccount);
       },
 
 
       propertyChanged: function(oldProperty, newProperty) {
-        this.view = newProperty && newProperty.views && newProperty.views[0];
+        this.view = Path.get('views[0]').getValueFrom(newProperty);
       },
 
 
