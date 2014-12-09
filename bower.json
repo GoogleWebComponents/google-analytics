@@ -26,6 +26,7 @@
   ],
   "dependencies": {
     "es6-promise": "^2.0.0",
+    "ga-api-utils": "googleanalytics/javascript-api-utils#^0.1.0",
     "google-chart": "GoogleWebComponents/google-chart#^0.2.0",
     "google-signin": "GoogleWebComponents/google-signin#^0.1.0",
     "polymer": "Polymer/polymer#^0.5.1"
