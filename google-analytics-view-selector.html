@@ -73,7 +73,7 @@ Element for selecting the view ID (ids) value for queries inside a
 
   <script>
 
-    Polymer('google-analytics-view-selector', {
+    Polymer({
 
       /**
        * Fired when the users changes the view
@@ -100,7 +100,7 @@ Element for selecting the view ID (ids) value for queries inside a
        *
        * See the <a href="https://github.com/googleanalytics/javascript-api-utils">Github repo</a> for more details.
        *
-       * @attribute summaries
+       * @property summaries
        * @type Object
        */
 
@@ -108,7 +108,7 @@ Element for selecting the view ID (ids) value for queries inside a
       /**
        * The `account` attribute is the currently selected account.
        *
-       * @attribute account
+       * @property account
        * @type Object
        */
 
@@ -116,7 +116,7 @@ Element for selecting the view ID (ids) value for queries inside a
       /**
        * The `property` attribute is the currently selected property.
        *
-       * @attribute property
+       * @property property
        * @type Object
        */
 
@@ -124,7 +124,7 @@ Element for selecting the view ID (ids) value for queries inside a
       /**
        * The `view` attribute is the currently selected view.
        *
-       * @attribute view
+       * @property view
        * @type Object
        */
 
