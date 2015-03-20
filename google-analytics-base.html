@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../google-signin/google-signin-aware.html">
 <link rel="import" href="promise-import.html">
 
 <!--
@@ -17,6 +18,10 @@ intended to be used by itself. It is only intended to be subclassed.
       name="analytics"
       version="v3">
     </google-api-loader>
+    <google-signin-aware
+      scopes="https://www.googleapis.com/auth/analytics.readonly"
+      on-google-signin-aware-success="{{userAuthorized}}"
+      on-google-signin-aware-signed-out="{{userUnauthorized}}"></google-signin-aware>
   </template>
 
   <script>
@@ -66,23 +71,13 @@ intended to be used by itself. It is only intended to be subclassed.
           }
         },
 
-        created: function() {
-          document.addEventListener('google-signin-success', function(event) {
-            loadPromise
-                .then(this.userAuthorized.bind(this,event.detail.result));
-          }.bind(this));
-          document.addEventListener('google-signed-out', function(event) {
-            this.userUnauthorized();
-          }.bind(this));
-        },
-
         /**
          * The `userAuthorized` method will be invoked when the user has
          * successfully signed in and all the underlying client libraries
          * have been loaded.
          *
          * @method userAuthorized
-         * @param {Object} data - The auth data information.
+         * @param {Object} user - The auth user information.
          */
         userAuthorized: function(data) {
           this.authorized = true;
@@ -97,11 +92,7 @@ intended to be used by itself. It is only intended to be subclassed.
         userUnauthorized: function() {
           this.authorized = false;
         }
-
       });
-
     }());
-
   </script>
-
 </polymer-element>
