@@ -30,9 +30,7 @@ header > h1 em {
   opacity: .6;
 }
 header > google-signin {
-  color: #ccc;
   display: table-cell;
-  font-size: 1.1em;
   vertical-align: middle;
   white-space: nowrap;
 }
