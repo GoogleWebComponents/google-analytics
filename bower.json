@@ -2,7 +2,7 @@
   "name": "google-analytics",
   "version": "0.0.4",
   "description": "Encapsulates Google Analytics dashboard features into web components",
-  "homepage": "http://googlewebcomponents.github.io/google-analytics",
+  "homepage": "https://googlewebcomponents.github.io/google-analytics",
   "authors": [
     "Philip Walton <philip@philipwalton.com>"
   ],
