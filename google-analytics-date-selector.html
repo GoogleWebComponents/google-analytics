@@ -1,5 +1,4 @@
-<link rel="import" href="google-analytics-base.html">
-
+<link rel="import" href="../polymer/polymer.html">
 <!--
 Element for selecting the start and end date values for queries inside a
 `<google-analytics-dashboard>` element.
@@ -28,19 +27,15 @@ Element for selecting the start and end date values for queries inside a
 @homepage https://googlewebcomponents.github.io/google-analytics
 -->
 
-<polymer-element
-  name="google-analytics-date-selector"
-  extends="google-analytics-base"
-  attributes="startDate endDate minStartDate maxEndDate">
-
+<dom-module id="google-analytics-date-selector">
+  <style>
+    input {
+      color: inherit;
+      font: inherit;
+      margin: 0;
+    }
+  </style>
   <template>
-    <style>
-      input {
-        color: inherit;
-        font: inherit;
-        margin: 0;
-      }
-    </style>
     <span class="control">
       <label for="startDate">Start Date</label>
       <input
@@ -60,6 +55,7 @@ Element for selecting the start and end date values for queries inside a
         max="{{maxEndDate}}">
     </span>
   </template>
+</dom-module>
   <script>
 
     (function() {
@@ -73,73 +69,6 @@ Element for selecting the start and end date values for queries inside a
 
       var nDaysAgo = /(\d+)daysAgo/;
       var dateFormat = /\d{4}\-\d{2}\-\d{2}/;
-
-      Polymer('google-analytics-date-selector', {
-
-        /**
-         * The `startDate` attribute is the start date for fetching Analytics
-         * data. Requests can specify a start date formatted as YYYY-MM-DD, or
-         * as a relative date (e.g., today, yesterday, or NdaysAgo where N is a
-         * positive integer).
-         *
-         * See the <a href="https://developers.google.com/analytics/devguides/reporting/core/v3/reference#startDate">Core Reporting API parameter reference</a> for more details.
-         *
-         * @attribute startDate
-         * @default '7daysAgo'
-         * @type string
-         */
-        startDate: convertDate('7daysAgo'),
-
-        /**
-         * The `endDate` attribute is the end date for fetching Analytics
-         * data. Requests can specify an end date formatted as YYYY-MM-DD, or
-         * as a relative date (e.g., today, yesterday, or NdaysAgo where N is a
-         * positive integer).
-         *
-         * See the <a href="https://developers.google.com/analytics/devguides/reporting/core/v3/reference#endDate">Core Reporting API parameter reference</a> for more details.
-         *
-         * @attribute endDate
-         * @default 'yesterday'
-         * @type string
-         */
-        endDate: convertDate('yesterday'),
-
-        /**
-         * The `minStartDate` attribute is used as the `min` attribute on the
-         * start date `<input>`.
-         *
-         * @attribute minStartDate
-         * @default '2005-01-01'
-         * @type string
-         */
-        minStartDate: '2005-01-01',
-
-        /**
-         * The `maxEndDate` attribute is used as the `max` attribute on the
-         * end date `<input>`.
-         *
-         * @attribute maxEndDate
-         * @default 'today'
-         * @type string
-         */
-        maxEndDate: convertDate('today'),
-
-        startDateChanged: function(old, cur) {
-          this.startDate = convertDate(cur);
-          this.$.startDate.value = this.startDate;
-          this.fire('analytics-dashboard-control-change', {
-            startDate: this.startDate
-          });
-        },
-
-        endDateChanged: function(old, cur) {
-          this.endDate = convertDate(cur);
-          this.$.endDate.value = this.endDate;
-          this.fire('analytics-dashboard-control-change', {
-            endDate: this.endDate
-          });
-        }
-      });
 
       /**
        * Convert a date acceptable to the Core Reporting API (e.g. `today`,
@@ -177,6 +106,86 @@ Element for selecting the start and end date values for queries inside a
         day = day.length == 1 ? '0' + day: day;
         return date.getFullYear() + '-' + month + '-' + day;
       }
+
+      Polymer({
+
+        is: 'google-analytics-date-selector',
+
+        properties: {
+          /**
+           * The `startDate` attribute is the start date for fetching Analytics
+           * data. Requests can specify a start date formatted as YYYY-MM-DD, or
+           * as a relative date (e.g., today, yesterday, or NdaysAgo where N is a
+           * positive integer).
+           *
+           * See the <a href="https://developers.google.com/analytics/devguides/reporting/core/v3/reference#startDate">Core Reporting API parameter reference</a> for more details.
+           *
+           * @attribute startDate
+           * @default '7daysAgo'
+           * @type string
+           */
+          startDate: {
+            type: String,
+            value: convertDate('7daysAgo'),
+            observer: 'startDateChanged'
+          },
+
+          /**
+           * The `endDate` attribute is the end date for fetching Analytics
+           * data. Requests can specify an end date formatted as YYYY-MM-DD, or
+           * as a relative date (e.g., today, yesterday, or NdaysAgo where N is a
+           * positive integer).
+           *
+           * See the <a href="https://developers.google.com/analytics/devguides/reporting/core/v3/reference#endDate">Core Reporting API parameter reference</a> for more details.
+           *
+           * @attribute endDate
+           * @default 'yesterday'
+           * @type string
+           */
+          endDate: {
+            type: String,
+            value: convertDate('yesterday'),
+            observer: 'endDateChanged'
+          },
+
+          /**
+           * The `minStartDate` attribute is used as the `min` attribute on the
+           * start date `<input>`.
+           *
+           * @attribute minStartDate
+           * @default '2005-01-01'
+           * @type string
+           */
+          minStartDate: '2005-01-01',
+
+          /**
+           * The `maxEndDate` attribute is used as the `max` attribute on the
+           * end date `<input>`.
+           *
+           * @attribute maxEndDate
+           * @default 'today'
+           * @type string
+           */
+          maxEndDate: convertDate('today'),
+        },
+        startDateChanged: function(cur, old) {
+          this.startDate = convertDate(cur);
+          this.$.startDate.value = this.startDate;
+          this.fire('analytics-dashboard-control-change', {
+            startDate: this.startDate
+          });
+        },
+
+        endDateChanged: function(cur, old) {
+          this.endDate = convertDate(cur);
+          this.$.endDate.value = this.endDate;
+          this.fire('analytics-dashboard-control-change', {
+            endDate: this.endDate
+          });
+        }
+      });
+
+
     }());
 
   </script>

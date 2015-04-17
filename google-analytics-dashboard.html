@@ -1,5 +1,5 @@
-<link rel="import" href="google-analytics-base.html">
-
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../google-signin/google-signin-aware.html">
 <!--
 Element for grouping Google Analytics elements together.
 
@@ -32,19 +32,22 @@ update query parameters.
 @homepage https://googlewebcomponents.github.io/google-analytics
 -->
 
-<polymer-element
-  name="google-analytics-dashboard"
-  extends="google-analytics-base"
-  on-analytics-dashboard-control-change="{{queryUpdated}}">
-
+<dom-module id="google-analytics-dashboard">
   <template>
+    <google-signin-aware
+      scopes="https://www.googleapis.com/auth/analytics.readonly"
+      on-google-signin-aware-success="userAuthorized"
+      on-google-signin-aware-signed-out="userUnauthorized"></google-signin-aware>
     <content></content>
   </template>
-  <script>
+</dom-module>
+<script>
+  (function(){
 
-    Polymer('google-analytics-dashboard', {
+    Polymer( {
+      is: 'google-analytics-dashboard',
 
-      ready: function() {
+      properties: {
         /**
          * The `query` attribute represents the internal query object of this
          * dashboard. It is updated when control elements fire the
@@ -53,9 +56,31 @@ update query parameters.
          * @attribute query
          * @type object
          */
-        this.query = {};
+        query: {
+          type: Object,
+          value: function() { return {} }
+        },
+        authorized: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        }
+      },
+      
+      listeners: {
+        'analytics-dashboard-control-change': 'queryUpdated'
+      },
 
+      ready: function() {
         this.updateChildren();
+      },
+
+      userAuthorized: function() {
+        this.authorized = true;
+      },
+
+      userUnauthorized: function() {
+        this.authorized = false;
       },
 
       /**
@@ -91,7 +116,6 @@ update query parameters.
       }
 
     });
+  })();
+</script>
 
-  </script>
-
-</polymer-element>
