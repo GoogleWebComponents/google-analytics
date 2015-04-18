@@ -279,14 +279,9 @@ Element for querying the Google Analytics Core Reporting API.
       },
 
       observers: {
-        'ids startDate endDate metrics dimensions sort filters segment samplingLevel startIndex maxResults output fields': 'getData',
-        /* metrics are bad */
-        'ids startDate endDate metrics': 'eatShit'
+        'ids startDate endDate metrics dimensions sort filters segment samplingLevel startIndex maxResults output fields': 'getData'
       },
 
-      eatShit: function() {
-        console.log("eat it");
-      },
       setupReadyChanged: function(newVal) {
         if (newVal)
           this.getData();
@@ -300,7 +295,6 @@ Element for querying the Google Analytics Core Reporting API.
        * @method getData
        */
       getData: function() {
-        console.log('getData');
         if (this.setupReady && this.hasRequiredParams) {
 
           this.loading = true;
@@ -338,7 +332,7 @@ Element for querying the Google Analytics Core Reporting API.
        */
       setData: function(data) {
         this.data = data;
-        this.fire('analytics-query-success', response);
+        this.fire('analytics-query-success', data);
       },
 
       /**
