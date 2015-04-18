@@ -1,5 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../google-signin/google-signin-aware.html">
+<link rel="import" href="google-analytics-setup.html">
 
 <!--
 Element for querying the Google Analytics Core Reporting API.
@@ -24,10 +24,7 @@ Element for querying the Google Analytics Core Reporting API.
 
 <dom-module id="google-analytics-query">
   <template>
-    <google-signin-aware
-      scopes="https://www.googleapis.com/auth/analytics.readonly"
-      on-google-signin-aware-success="userAuthorized"
-      on-google-signin-aware-signed-out="userUnauthorized"></google-signin-aware>
+    <google-analytics-setup all-ready="{{setupReady}}"></google-analytics-setup>
   </template>
 </dom-module>
 <script>
@@ -77,7 +74,8 @@ Element for querying the Google Analytics Core Reporting API.
          */
         ids: {
           type: String,
-          value: ''
+          value: '',
+          notify: true
         },
         /**
          * The `startDate` attribute is the start date for fetching Analytics
@@ -123,7 +121,8 @@ Element for querying the Google Analytics Core Reporting API.
          * @type string
          */
         metrics: {
-          type: String
+          type: String,
+          value: ''
         },
         /**
          * The `dimensions` attribute is a list of comma-separated dimensions
@@ -135,7 +134,8 @@ Element for querying the Google Analytics Core Reporting API.
          * @type string
          */
         dimensions: {
-          type: String
+          type: String,
+          value: ''
         },
         /**
          * The `sort` attribute is a list of comma-separated dimensions
@@ -148,7 +148,8 @@ Element for querying the Google Analytics Core Reporting API.
          * @type string
          */
         sort: {
-          type: String
+          type: String,
+          value: ''
         },
         /**
          * The `filters` attribute is dimension or metric filters that restrict
@@ -160,7 +161,8 @@ Element for querying the Google Analytics Core Reporting API.
          * @type string
          */
         filters: {
-          type: String
+          type: String,
+          value: ''
         },
         /**
          * The `segment` attribute segments the data returned for your
@@ -172,7 +174,8 @@ Element for querying the Google Analytics Core Reporting API.
          * @type string
          */
         segment: {
-          type: String
+          type: String,
+          value: ''
         },
         /**
          * The `samplingLevel` attribute sets the desired sampling level.
@@ -185,6 +188,7 @@ Element for querying the Google Analytics Core Reporting API.
          */
         samplingLevel: {
           type: String,
+          value: ''
         },
         /**
          * The `startIndex` attribute sets the first row of data to retrieve,
@@ -197,7 +201,8 @@ Element for querying the Google Analytics Core Reporting API.
          * @type integer
          */
         startIndex: {
-          type: Number
+          type: Number,
+          value: 0
         },
         /**
          * The `maxResults` attribute is the maximum number of rows to include
@@ -209,7 +214,8 @@ Element for querying the Google Analytics Core Reporting API.
          * @type integer
          */
         maxResults: {
-          type: Number
+          type: Number,
+          value: 0
         },
         /**
          * The `output` attribute sets the desired output type for the
@@ -222,7 +228,8 @@ Element for querying the Google Analytics Core Reporting API.
          * @type string
          */
         output: {
-          type: String
+          type: String,
+          value: 'dataTable'
         },
         /**
          * The `fields` attribute is a selector specifying a subset of
@@ -234,7 +241,8 @@ Element for querying the Google Analytics Core Reporting API.
          * @type string
          */
         fields: {
-          type: String
+          type: String,
+          value: ''
         },
 
         /**
@@ -256,21 +264,34 @@ Element for querying the Google Analytics Core Reporting API.
          */
         getDataResponseHandler: {
           type: Function
+        },
+        /**
+         * True if setup is ready 
+         * 
+         * @attribute setupReady
+         * @type Boolean
+         */
+        setupReady: {
+          type: Boolean,
+          observer: 'setupReadyChanged'
         }
+
       },
 
       observers: {
-        'ids startDate endDate metrics dimensions sort filters segment samplingLevel startIndex maxResults output fields': 'getData'
+        'ids startDate endDate metrics dimensions sort filters segment samplingLevel startIndex maxResults output fields': 'getData',
+        /* metrics are bad */
+        'ids startDate endDate metrics': 'eatShit'
       },
 
-      userAuthorized: function() {
-        this.authorized = true;
-        this.getData();
+      eatShit: function() {
+        console.log("eat it");
       },
-
-      userUnauthorized: function() {
-        this.authorized = false;
-        this.data = null;
+      setupReadyChanged: function(newVal) {
+        if (newVal)
+          this.getData();
+        else
+          this.data = null;
       },
 
       /**
@@ -279,7 +300,8 @@ Element for querying the Google Analytics Core Reporting API.
        * @method getData
        */
       getData: function() {
-        if (this.authorized && this.hasRequiredParams) {
+        console.log('getData');
+        if (this.setupReady && this.hasRequiredParams) {
 
           this.loading = true;
           // Required parameters.
@@ -332,8 +354,8 @@ Element for querying the Google Analytics Core Reporting API.
           this.fire('analytics-query-error', response.error);
         }
         else {
-          if (getDataResponseHandler)
-            getDataResponseHandler(response)
+          if (this.getDataResponseHandler)
+            this.getDataResponseHandler(response)
           else
             this.setData(response);
         }

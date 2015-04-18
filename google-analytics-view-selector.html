@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../google-signin/google-signin-aware.html">
 <link rel="import" href="account-summaries-import.html">
+<link rel="import" href="google-analytics-setup.html">
 
 <!--
 Element for selecting the view ID (ids) value for queries inside a
@@ -35,10 +35,7 @@ Element for selecting the view ID (ids) value for queries inside a
     }
   </style>
   <template>
-    <google-signin-aware
-      scopes="https://www.googleapis.com/auth/analytics.readonly"
-      on-google-signin-aware-success="userAuthorized"
-      on-google-signin-aware-signed-out="userUnauthorized"></google-signin-aware>
+    <google-analytics-setup all-ready="{{setupReady}}"></google-analytics-setup>
     <span class="control">
       <label for="account">Account</label>
       <select id="account"
@@ -141,36 +138,47 @@ Element for selecting the view ID (ids) value for queries inside a
       view: {
         type: Object,
         observer: 'viewChanged'
+      },
+
+       /**
+       * True if setup is ready 
+       * 
+       * @attribute setupReady
+       * @type Boolean
+       */
+      setupReady: {
+        type: Boolean,
+        observer: 'setupReadyChanged'
       }
     },
 
-    userAuthorized: function(data) {
+    setupReadyChanged: function(newVal, oldVal) {
+      if (newVal) {
+        gaApiUtils.accountSummaries.get().then(function(accountSummaries) {
+          this.summaries = accountSummaries;
+          this.accounts = accountSummaries.all();
 
-      gaApiUtils.accountSummaries.get().then(function(accountSummaries) {
-        this.summaries = accountSummaries;
-        this.accounts = accountSummaries.all();
-
-        if (this.ids) {
-          // Manually call `idsChanged` here. The first change event will
-          // likely happen prior to fetching the accountSummaries data.
-          this.idsChanged(null, this.ids);
-        } else {
-          // When there's no `ids` set, just select the first account,
-          // which will trigger change events and set the property and view.
-          this.account = this.accounts[0];
-        }
-      }.bind(this));
+          if (this.ids) {
+            // Manually call `idsChanged` here. The first change event will
+            // likely happen prior to fetching the accountSummaries data.
+            this.idsChanged(null, this.ids);
+          } else {
+            // When there's no `ids` set, just select the first account,
+            // which will trigger change events and set the property and view.
+            this.account = this.accounts[0];
+          }
+        }.bind(this));
+      }
+      else {
+        this.summaries = null;
+        this.accounts = null;
+        this.account = null;
+        this.property = null;
+        this.view = null;
+        this.ids = null;      
+      }
     },
-
-    userUnauthorized: function() {
-      this.summaries = null;
-      this.accounts = null;
-      this.account = null;
-      this.property = null;
-      this.view = null;
-      this.ids = null;
-    },
-
+    
     /**
      * The `updateAccount` method is bound to the change event on the
      * account `<select>`. It updates the property and view `<select>`s based
@@ -201,12 +209,20 @@ Element for selecting the view ID (ids) value for queries inside a
 
 
     accountChanged: function(newAccount, oldAccount) {
-      this.property = Path.get('properties[0]').getValueFrom(newAccount);
+      console.log("FIXME path");
+      if (newAccount) {
+        // this.property = Path.get('properties[0]').getValueFrom(newAccount);
+        this.property = newAccount.properties[0];
+      }
     },
 
 
     propertyChanged: function(newProperty, oldProperty) {
-      this.view = Path.get('views[0]').getValueFrom(newProperty);
+      console.log("FIXME");
+      if (newProperty) {
+        this.view = newProperty.views[0];
+        // this.view = Path.get('views[0]').getValueFrom(newProperty);
+      }
     },
 
 

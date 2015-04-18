@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../google-signin/google-signin-aware.html">
+<link rel="import" href="google-analytics-setup.html">
+
 <!--
 Element for grouping Google Analytics elements together.
 
@@ -34,10 +35,7 @@ update query parameters.
 
 <dom-module id="google-analytics-dashboard">
   <template>
-    <google-signin-aware
-      scopes="https://www.googleapis.com/auth/analytics.readonly"
-      on-google-signin-aware-success="userAuthorized"
-      on-google-signin-aware-signed-out="userUnauthorized"></google-signin-aware>
+    <google-analytics-setup authorized="{{authorized}}"></google-analytics-setup>
     <content></content>
   </template>
 </dom-module>
@@ -75,14 +73,6 @@ update query parameters.
         this.updateChildren();
       },
 
-      userAuthorized: function() {
-        this.authorized = true;
-      },
-
-      userUnauthorized: function() {
-        this.authorized = false;
-      },
-
       /**
        * The `queryUpdated` method is the callback for whenever the
        * `analytics-dashboard-control-change` event is fired. It updates the
@@ -110,7 +100,8 @@ update query parameters.
         var charts = this.querySelectorAll('google-analytics-chart');
         for (var i = 0, chart; chart = charts[i]; i++) {
           Object.keys(this.query).forEach(function(key) {
-            chart[key] = this.query[key];
+            console.log(key);
+              chart[key] = this.query[key];
           }.bind(this));
         }
       }
