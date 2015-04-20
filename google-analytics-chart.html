@@ -54,6 +54,7 @@ Google Chart.
       height="{{height}}"
       data="{{data.dataTable}}">
     </google-chart>
+    <p><span>{{height}}</span></p>
     <content select="footer"></content>
   </template>
 </dom-module>
@@ -166,16 +167,18 @@ Google Chart.
          * google-analytics-query passthrough properties
          * See google-analytics-query for documentation
          */
+        startDate: {
+          type: String,
+          value: "2015-04-12",
+          observer: 'startDateChanged'
+        },
+        endDate: {
+          type: String
+        },
         data: {
           type: Object
         },
         ids: {
-          type: String
-        },
-        startDate: {
-          type: String
-        },
-        endDate: {
           type: String
         },
         metrics: {
@@ -208,21 +211,25 @@ Google Chart.
         },
         fields: {
           type: String
-        },
+        }
       },
 
       ready: function() {
+        console.log('chart ready');
         this._boundResponseHandler = this.handleResponse.bind(this);
         merge(this.$.chart.options, getChartOptions(this.type), this.options);
       },
 
+      startDateChanged: function(newval, oldval) {
+        console.log("startdate changed");
+      },
       setupReadyChanged: function(newVal, oldVal) {
         if (newVal)
           metadata.get();
       },
 
       beforeQuerySend: function(query) {
-        query._src = 'gwc-ga-chart'; // TODO refactor this into analytics query
+        query._src = 'gwc-ga-chart'; // FIXME refactor this into analytics query
       },
 
       handleResponse: function(response) {
@@ -423,17 +430,3 @@ Google Chart.
 
 </script>
 
-<dom-module>
-  <google-dashboard>
-    <google-chart start-date="{{startDate"}} type="pie"></google-chart>  
-    <google-chart start-date="{{startDate"}} type="bar"></google-chart>
-  </google-dashboard>
-</dom-module>
-
-But, <google-dashboard> imports its children through <content> insertion point.
-
-<dom-module>
-  <content></content>
-</dom-module>
-
-What I want to do is programatically loop throguht that content, find all google-charts, and bind dashboard.startDate to chart.startDate

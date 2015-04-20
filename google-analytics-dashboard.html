@@ -70,9 +70,9 @@ update query parameters.
       },
 
       ready: function() {
+        console.log('dashboard ready');
         this.updateChildren();
       },
-
       /**
        * The `queryUpdated` method is the callback for whenever the
        * `analytics-dashboard-control-change` event is fired. It updates the
@@ -82,6 +82,7 @@ update query parameters.
        * @param {CustomEvent} event - The event with the query data.
        */
       queryUpdated: function(event) {
+        console.log('queryUpdated');
         // Update `this.query` with the passed event data.
         Object.keys(event.detail).forEach(function(key) {
           this.query[key] = event.detail[key];
@@ -97,6 +98,7 @@ update query parameters.
        * @method updateChildren
        */
       updateChildren: function() {
+        return;
         var charts = this.querySelectorAll('google-analytics-chart');
         for (var i = 0, chart; chart = charts[i]; i++) {
           Object.keys(this.query).forEach(function(key) {

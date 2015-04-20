@@ -39,30 +39,30 @@ Element for selecting the view ID (ids) value for queries inside a
     <span class="control">
       <label for="account">Account</label>
       <select id="account"
-        on-change="{{updateAccount}}"
+        on-change="updateAccount"
         value="{{account.id}}">
-        <template repeat="{{account in accounts}}">
-          <option value="{{account.id}}">{{account.name}}</option>
+        <template is="x-repeat" items="{{accounts}}">
+          <option value="{{item.id}}">{{item.name}}</option>
         </template>
       </select>
     </span>
     <span class="control">
       <label>Property</label>
       <select id="property"
-        on-change="{{updateProperty}}"
+        on-change="updateProperty"
         value="{{property.id}}">
-        <template repeat="{{property in account.properties}}">
-          <option value="{{property.id}}">{{property.name}}</option>
+        <template is="x-repeat" items="{{account.properties}}">
+          <option value="{{item.id}}">{{item.name}}</option>
         </template>
       </select>
     </span>
     <span class="control">
       <label>View</label>
       <select id="view"
-        on-change="{{updateView}}"
+        on-change="updateView"
         value="{{view.id}}">
-        <template repeat="{{view in property.views}}">
-          <option value="{{view.id}}">{{view.name}}</option>
+        <template is="x-repeat"  items="{{property.views}}">
+          <option value="{{item.id}}">{{item.name}}</option>
         </template>
       </select>
     </span>
@@ -152,6 +152,10 @@ Element for selecting the view ID (ids) value for queries inside a
       }
     },
 
+    ready: function() {
+      console.log('view-selector ready');
+    },
+
     setupReadyChanged: function(newVal, oldVal) {
       if (newVal) {
         gaApiUtils.accountSummaries.get().then(function(accountSummaries) {
@@ -209,16 +213,13 @@ Element for selecting the view ID (ids) value for queries inside a
 
 
     accountChanged: function(newAccount, oldAccount) {
-      console.log("FIXME path");
       if (newAccount) {
-        // this.property = Path.get('properties[0]').getValueFrom(newAccount);
         this.property = newAccount.properties[0];
       }
     },
 
 
     propertyChanged: function(newProperty, oldProperty) {
-      console.log("FIXME");
       if (newProperty) {
         this.view = newProperty.views[0];
         // this.view = Path.get('views[0]').getValueFrom(newProperty);

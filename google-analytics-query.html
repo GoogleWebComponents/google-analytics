@@ -278,9 +278,9 @@ Element for querying the Google Analytics Core Reporting API.
 
       },
 
-      observers: {
-        'ids startDate endDate metrics dimensions sort filters segment samplingLevel startIndex maxResults output fields': 'getData'
-      },
+      observers: [
+        'getData(ids startDate endDate metrics dimensions sort filters segment samplingLevel startIndex maxResults output fields)'
+      ],
 
       setupReadyChanged: function(newVal) {
         if (newVal)
