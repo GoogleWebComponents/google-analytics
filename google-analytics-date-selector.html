@@ -127,7 +127,8 @@ Element for selecting the start and end date values for queries inside a
         startDate: {
           type: String,
           value: convertDate('7daysAgo'),
-          observer: 'startDateChanged'
+          observer: 'startDateChanged',
+          notify: true
         },
 
         /**
@@ -145,7 +146,8 @@ Element for selecting the start and end date values for queries inside a
         endDate: {
           type: String,
           value: convertDate('yesterday'),
-          observer: 'endDateChanged'
+          observer: 'endDateChanged',
+          notify: true
         },
 
         /**

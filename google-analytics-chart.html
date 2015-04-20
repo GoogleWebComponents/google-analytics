@@ -169,8 +169,6 @@ Google Chart.
          */
         startDate: {
           type: String,
-          value: "2015-04-12",
-          observer: 'startDateChanged'
         },
         endDate: {
           type: String
@@ -215,14 +213,10 @@ Google Chart.
       },
 
       ready: function() {
-        console.log('chart ready');
         this._boundResponseHandler = this.handleResponse.bind(this);
         merge(this.$.chart.options, getChartOptions(this.type), this.options);
       },
 
-      startDateChanged: function(newval, oldval) {
-        console.log("startdate changed");
-      },
       setupReadyChanged: function(newVal, oldVal) {
         if (newVal)
           metadata.get();

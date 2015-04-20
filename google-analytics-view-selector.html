@@ -94,7 +94,8 @@ Element for selecting the view ID (ids) value for queries inside a
        */
       ids: {
         type: String,
-        observer: 'idsChanged'
+        observer: 'idsChanged',
+        notify: true
       },
 
       /**
@@ -150,10 +151,6 @@ Element for selecting the view ID (ids) value for queries inside a
         type: Boolean,
         observer: 'setupReadyChanged'
       }
-    },
-
-    ready: function() {
-      console.log('view-selector ready');
     },
 
     setupReadyChanged: function(newVal, oldVal) {

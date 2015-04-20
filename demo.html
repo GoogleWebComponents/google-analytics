@@ -174,29 +174,42 @@
     </google-signin>
   </header>
 
-  <google-analytics-dashboard>
-
-    <google-analytics-view-selector></google-analytics-view-selector>
-    <google-analytics-date-selector></google-analytics-date-selector>
+  <template is="x-autobind">
+    <google-analytics-view-selector ids="{{ids}}"></google-analytics-view-selector>
+    <google-analytics-date-selector 
+      start-date="{{startDate}}" 
+      end-date="{{endDate}}"></google-analytics-date-selector>
 
     <google-analytics-chart
       type="area"
       metrics="ga:sessions"
-      dimensions="ga:date">
+      dimensions="ga:date"
+      ids="[[ids]]"
+      start-date="[[startDate]]"
+      end-date="[[endDate]]"
+      >
       <h3>Site Traffic</h3>
     </google-analytics-chart>
 
     <google-analytics-chart
       type="column"
       metrics="ga:avgPageLoadTime"
-      dimensions="ga:date">
+      dimensions="ga:date"
+      ids="[[ids]]"
+      start-date="[[startDate]]"
+      end-date="[[endDate]]"
+    >
       <h3>Average Page Load Times</h3>
     </google-analytics-chart>
 
     <google-analytics-chart
       type="geo"
       metrics="ga:users"
-      dimensions="ga:country">
+      dimensions="ga:country"
+      ids="[[ids]]"
+      start-date="[[startDate]]"
+      end-date="[[endDate]]"
+    >
       <h3>Users by Country</h3>
     </google-analytics-chart>
 
@@ -205,11 +218,13 @@
       metrics="ga:pageviews"
       dimensions="ga:browser"
       sort="-ga:pageviews"
-      maxResults="5">
+      maxResults="5"
+      ids="[[ids]]"
+      start-date="[[startDate]]"
+      end-date="[[endDate]]"
+    >
       <h3>Pageviews by Browser</h3>
     </google-analytics-chart>
-
-  </google-analytics-dashboard>
-
+  </template>
 </body>
 </html>
