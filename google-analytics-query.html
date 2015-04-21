@@ -246,6 +246,16 @@ Element for querying the Google Analytics Core Reporting API.
         },
 
         /**
+         * Some legacy variable: I believe the GA team was using _src for analytics purposes.
+         * @attribute underscoreSrc
+         * @type string
+         */
+        underscoreSrc: {
+          type: String,
+          value: 'gwc-ga-query'
+        },
+
+        /**
          * true if data is getting loeaded
          * @attribute loading
          * @type Boolean
@@ -303,7 +313,7 @@ Element for querying the Google Analytics Core Reporting API.
             'start-date': this.startDate,
             'end-date': this.endDate,
             'metrics': this.metrics,
-            '_src': 'gwc-ga-query'
+            '_src': this.underscoreSrc
           };
 
           // Optional parameters.

@@ -108,12 +108,12 @@
     /**
      * <google-analytics-view-selector> styles.
      */
-    google-analytics-dashboard {
+    #charts {
       display: block;
       padding: 1.5em;
       transition: opacity .3s ease;
-    }g
-    google-analytics-dashboard:not([authorized]) {
+    }
+    #charts:not([authorized]) {
       opacity: .4;
       pointer-events: none;
     }
@@ -167,64 +167,74 @@
 </head>
 <body>
 
-  <header>
-    <h1>Google Analytics <em>Polymer Elements Demo</em></h1>
-    <google-signin
-      client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com">
-    </google-signin>
-  </header>
 
-  <template is="x-autobind">
-    <google-analytics-view-selector ids="{{ids}}"></google-analytics-view-selector>
-    <google-analytics-date-selector 
-      start-date="{{startDate}}" 
-      end-date="{{endDate}}"></google-analytics-date-selector>
+  <template is="x-autobind" id="main">
+    <header>
+      <h1>Google Analytics <em>Polymer Elements Demo</em></h1>
+      <google-signin
+        client-id="1054047045356-j8pgqgls9vdef3rl09hapoicumbte0bo.apps.googleusercontent.com"
+        on-google-signin-success="signIn"
+        on-google-signed-out="signOut">
+      </google-signin>
+    </header>
+    <div id="charts">
+      <google-analytics-view-selector ids="{{ids}}"></google-analytics-view-selector>
+      <google-analytics-date-selector 
+        start-date="{{startDate}}" 
+        end-date="{{endDate}}"></google-analytics-date-selector>
 
-    <google-analytics-chart
-      type="area"
-      metrics="ga:sessions"
-      dimensions="ga:date"
-      ids="[[ids]]"
-      start-date="[[startDate]]"
-      end-date="[[endDate]]"
-      >
-      <h3>Site Traffic</h3>
-    </google-analytics-chart>
+      <google-analytics-chart
+        type="area"
+        metrics="ga:sessions"
+        dimensions="ga:date"
+        ids="[[ids]]"
+        start-date="[[startDate]]"
+        end-date="[[endDate]]">
+        <h3>Site Traffic</h3>
+      </google-analytics-chart>
 
-    <google-analytics-chart
-      type="column"
-      metrics="ga:avgPageLoadTime"
-      dimensions="ga:date"
-      ids="[[ids]]"
-      start-date="[[startDate]]"
-      end-date="[[endDate]]"
-    >
-      <h3>Average Page Load Times</h3>
-    </google-analytics-chart>
+      <google-analytics-chart
+        type="column"
+        metrics="ga:avgPageLoadTime"
+        dimensions="ga:date"
+        ids="[[ids]]"
+        start-date="[[startDate]]"
+        end-date="[[endDate]]">
+        <h3>Average Page Load Times</h3>
+      </google-analytics-chart>
 
-    <google-analytics-chart
-      type="geo"
-      metrics="ga:users"
-      dimensions="ga:country"
-      ids="[[ids]]"
-      start-date="[[startDate]]"
-      end-date="[[endDate]]"
-    >
-      <h3>Users by Country</h3>
-    </google-analytics-chart>
+      <google-analytics-chart
+        type="geo"
+        metrics="ga:users"
+        dimensions="ga:country"
+        ids="[[ids]]"
+        start-date="[[startDate]]"
+        end-date="[[endDate]]">
+        <h3>Users by Country</h3>
+      </google-analytics-chart>
 
-    <google-analytics-chart
-      type="pie"
-      metrics="ga:pageviews"
-      dimensions="ga:browser"
-      sort="-ga:pageviews"
-      maxResults="5"
-      ids="[[ids]]"
-      start-date="[[startDate]]"
-      end-date="[[endDate]]"
-    >
-      <h3>Pageviews by Browser</h3>
-    </google-analytics-chart>
+      <google-analytics-chart
+        type="pie"
+        metrics="ga:pageviews"
+        dimensions="ga:browser"
+        sort="-ga:pageviews"
+        maxResults="5"
+        ids="[[ids]]"
+        start-date="[[startDate]]"
+        end-date="[[endDate]]">
+        <h3>Pageviews by Browser</h3>
+      </google-analytics-chart>
+    </div>
   </template>
+  <script>
+    var charts = document.querySelector('#charts');
+    var t = document.querySelector('#main');
+    t.signIn = function() {
+      charts.setAttribute('authorized', true);
+    }
+    t.signOut = function() {
+      charts.removeAttribute('authorized');
+    }
+  </script>
 </body>
 </html>

@@ -46,6 +46,7 @@ Google Chart.
       max-results="{{maxResults}}"
       output="{{output}}"
       fields="{{fields}}"
+      underscore-src="gwc-ga-chart"
       ></google-analytics-query>
     <content select="header,h1,h2,h3,h4,h5,h6"></content>
     <google-chart id="chart"
@@ -54,7 +55,6 @@ Google Chart.
       height="{{height}}"
       data="{{data.dataTable}}">
     </google-chart>
-    <p><span>{{height}}</span></p>
     <content select="footer"></content>
   </template>
 </dom-module>
@@ -166,6 +166,7 @@ Google Chart.
         /** 
          * google-analytics-query passthrough properties
          * See google-analytics-query for documentation
+         * startDate, endDate, data, ids, metrics, dimensions, sort, filters, segment, samplingLevel, startIndex, maxResults, output, fields
          */
         startDate: {
           type: String,
@@ -220,10 +221,6 @@ Google Chart.
       setupReadyChanged: function(newVal, oldVal) {
         if (newVal)
           metadata.get();
-      },
-
-      beforeQuerySend: function(query) {
-        query._src = 'gwc-ga-chart'; // FIXME refactor this into analytics query
       },
 
       handleResponse: function(response) {
