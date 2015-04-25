@@ -1,5 +1,5 @@
-<link rel="import" href="google-analytics-base.html">
-
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../google-signin/google-signin-aware.html">
 <!--
 Element for grouping Google Analytics elements together.
 
@@ -32,13 +32,12 @@ update query parameters.
 @homepage https://googlewebcomponents.github.io/google-analytics
 -->
 
-<polymer-element
-  name="google-analytics-dashboard"
-  extends="google-analytics-base"
-  on-analytics-dashboard-control-change="{{queryUpdated}}">
 
 <dom-module id="google-analytics-dashboard">
   <template>
+    <google-signin-aware 
+      on-google-signin-aware-success="signedIn"
+      on-google-signin-aware-signed-out="signedOut"></google-signin-aware>
     <content id="content"></content>
   </template>
 </dom-module>
@@ -51,8 +50,18 @@ update query parameters.
     properties: {
       query: {
         type: Object,
-        value: function() { return {} };
+        value: function() { return {} }
+      },
+
+      authorized: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true
       }
+    },
+
+    listeners: {
+      'analytics-dashboard-control-change': 'queryUpdated',
     },
     ready: function() {
       /**
@@ -64,7 +73,7 @@ update query parameters.
        * @type object
        */
 
-      this.updateChildren();
+     this.updateChildren();
     },
 
     /**
@@ -91,17 +100,23 @@ update query parameters.
      * @method updateChildren
      */
     updateChildren: function() {
-      debugger;
-      var charts = this.querySelectorAll('google-analytics-chart');
+      if (!this.authorized)
+        return;
+      var charts = Polymer.dom(this).querySelectorAll('google-analytics-chart');
       for (var i = 0, chart; chart = charts[i]; i++) {
         Object.keys(this.query).forEach(function(key) {
           chart[key] = this.query[key];
         }.bind(this));
       }
+    },
+    signedIn: function() {
+      this.authorized = true;
+      this.updateChildren();
+    },
+    signedOut: function() {
+      this.authorized = false;
     }
 
   });
 
 </script>
-
-</polymer-element>
