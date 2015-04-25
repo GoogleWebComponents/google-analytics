@@ -26,17 +26,44 @@ Google Chart.
 <polymer-element
   name="google-analytics-chart"
   extends="google-analytics-query"
-  attributes="type width height options">
+  attributes="type options">
 
   <template>
-    <content select="header,h1,h2,h3,h4,h5,h6"></content>
+    <style>
+      :host {
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-flex-direction: column;
+            -ms-flex-direction: column;
+                flex-direction: column;
+        height: 300px;
+        width: 450px;
+      }
+      #header,
+      #footer {
+        -webkit-flex: 0 0 auto;
+            -ms-flex: 0 0 auto;
+                flex: 0 0 auto;
+      }
+      google-chart {
+        -webkit-flex: 1 0 0%;
+            -ms-flex: 1 0 0%;
+                flex: 1 0 0%;
+        width: 100%;
+      }
+    </style>
+
+    <div id="header">
+      <content select="header,h1,h2,h3,h4,h5,h6"></content>
+    </div>
     <google-chart id="chart"
       type="{{type}}"
-      width="{{width}}"
-      height="{{height}}"
       data="{{data.dataTable}}">
     </google-chart>
-    <content select="footer"></content>
+    <div id="footer">
+      <content select="footer"></content>
+    </div>
   </template>
 
   <script>
@@ -56,24 +83,6 @@ Google Chart.
          * @type string
          */
         type: 'area',
-
-        /**
-         * Sets the width of the chart on the page.
-         *
-         * @attribute width
-         * @default 480
-         * @type number of string
-         */
-        width: 480,
-
-        /**
-         * Sets the height of the chart on the page.
-         *
-         * @attribute height
-         * @default 320
-         * @type number or string
-         */
-        height: 320,
 
         /**
          * Sets the options for the chart.
