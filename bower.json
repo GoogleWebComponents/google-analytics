@@ -30,5 +30,8 @@
     "ga-api-utils": "googleanalytics/javascript-api-utils#^0.2.0",
     "google-chart": "GoogleWebComponents/google-chart#0.8-preview",
     "google-signin": "GoogleWebComponents/google-signin#0.8-preview"
+  },
+  "devDependencies": {
+    "iron-doc-viewer": "PolymerElements/iron-doc-viewer#^0.8.0"
   }
 }
