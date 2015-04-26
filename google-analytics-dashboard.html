@@ -34,7 +34,17 @@ update query parameters.
 
 
 <dom-module id="google-analytics-dashboard">
+  <style>
+    .error {
+      color: red;
+      padding: 12px;
+      background-color: #FBCCC9;
+    }
+  </style>
   <template>
+    <template is="x-if" if="{{hasError}}">
+      <div class="error">{{parent.errorMessage}}</div>
+    </template>
     <google-signin-aware 
       on-google-signin-aware-success="signedIn"
       on-google-signin-aware-signed-out="signedOut"></google-signin-aware>
@@ -57,11 +67,22 @@ update query parameters.
         type: Boolean,
         value: false,
         reflectToAttribute: true
+      },
+
+      errorMessage: {
+        type: String,
+        value: ''
+      },
+
+      hasError: {
+        type: Boolean,
+        computed: 'computeHasError(errorMessage)'
       }
     },
 
     listeners: {
       'analytics-dashboard-control-change': 'queryUpdated',
+      'analytics-query-error': 'handleQueryError'
     },
     ready: function() {
       /**
@@ -115,6 +136,17 @@ update query parameters.
     },
     signedOut: function() {
       this.authorized = false;
+    },
+    handleQueryError: function(ev) {
+      this.errorMessage = ev.detail;
+      // Invalid credentials after a multi-hour session have been observed in the wild.
+      this.errorMessage = "Error loading data: " + ev.detail.message + ". Your session might have expired.";
+    },
+    computeHasError: function(errorMessage) {
+      if (errorMessage)
+        return true;
+      else
+        return false;
     }
 
   });
