@@ -158,7 +158,10 @@ Element for selecting the start and end date values for queries inside a
          * @default '2005-01-01'
          * @type string
          */
-        minStartDate: '2005-01-01',
+        minStartDate: {
+          type: String,
+          value: '2005-01-01'
+        },
 
         /**
          * The `maxEndDate` attribute is used as the `max` attribute on the
@@ -168,7 +171,10 @@ Element for selecting the start and end date values for queries inside a
          * @default 'today'
          * @type string
          */
-        maxEndDate: convertDate('today'),
+        maxEndDate: {
+          type: String,
+          value: convertDate('today')
+        }
       },
       startDateChanged: function(cur, old) {
         this.startDate = convertDate(cur);

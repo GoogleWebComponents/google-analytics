@@ -138,7 +138,7 @@ update query parameters.
     handleQueryError: function(event) {
       this.errorMessage = event.detail;
       // Invalid credentials after a multi-hour session have been observed in the wild.
-      this.errorMessage = "Error loading data: " + event.detail.message + ". Your session might have expired.";
+      this.errorMessage = "Error loading data: " + event.detail.message + " Reload might help.";
     },
     computeHasError: function(errorMessage) {
       if (errorMessage)
