@@ -74,8 +74,7 @@ Element for querying the Google Analytics Core Reporting API.
          */
         ids: {
           type: String,
-          value: '',
-          notify: true
+          value: ''
         },
         /**
          * The `startDate` attribute is the start date for fetching Analytics
@@ -229,7 +228,7 @@ Element for querying the Google Analytics Core Reporting API.
          */
         output: {
           type: String,
-          value: 'dataTable'
+          value: ''
         },
         /**
          * The `fields` attribute is a selector specifying a subset of
@@ -246,17 +245,15 @@ Element for querying the Google Analytics Core Reporting API.
         },
 
         /**
-         * Some legacy variable: I believe the GA team was using _src for analytics purposes.
-         * @attribute underscoreSrc
-         * @type string
+         * GA team internal variable for analytics purposes.
          */
-        underscoreSrc: {
+        _srcParam: {
           type: String,
           value: 'gwc-ga-query'
         },
 
         /**
-         * true if data is getting loeaded
+         * true if data is getting loaded
          * @attribute loading
          * @type Boolean
          */
@@ -267,7 +264,7 @@ Element for querying the Google Analytics Core Reporting API.
         },
 
         /**
-         * 
+         *
          *
          * @attribute getDataResponseHandler
          * @type Function
@@ -276,8 +273,8 @@ Element for querying the Google Analytics Core Reporting API.
           type: Function
         },
         /**
-         * True if setup is ready 
-         * 
+         * True if setup is ready
+         *
          * @attribute setupReady
          * @type Boolean
          */
@@ -289,7 +286,7 @@ Element for querying the Google Analytics Core Reporting API.
       },
 
       observers: [
-        'getData(ids startDate endDate metrics dimensions sort filters segment samplingLevel startIndex maxResults output fields)'
+        'getData(ids,startDate,endDate,metrics,dimensions,sort,filters,segment,samplingLevel,startIndex,maxResults,output,fields)'
       ],
 
       setupReadyChanged: function(newVal) {
@@ -313,7 +310,7 @@ Element for querying the Google Analytics Core Reporting API.
             'start-date': this.startDate,
             'end-date': this.endDate,
             'metrics': this.metrics,
-            '_src': this.underscoreSrc
+            '_src': this._srcParam
           };
 
           // Optional parameters.
