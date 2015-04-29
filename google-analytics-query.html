@@ -280,7 +280,7 @@ Element for querying the Google Analytics Core Reporting API.
          */
         setupReady: {
           type: Boolean,
-          observer: 'setupReadyChanged'
+          observer: '_setupReadyChanged'
         }
 
       },
@@ -289,7 +289,7 @@ Element for querying the Google Analytics Core Reporting API.
         'getData(ids,startDate,endDate,metrics,dimensions,sort,filters,segment,samplingLevel,startIndex,maxResults,output,fields)'
       ],
 
-      setupReadyChanged: function(newVal) {
+      _setupReadyChanged: function(newVal) {
         if (newVal)
           this.getData();
         else
@@ -302,7 +302,7 @@ Element for querying the Google Analytics Core Reporting API.
        * @method getData
        */
       getData: function() {
-        if (this.setupReady && this.hasRequiredParams) {
+        if (this.setupReady && this._hasRequiredParams) {
           this.loading = true;
           // Required parameters.
           var query = {
@@ -361,7 +361,7 @@ Element for querying the Google Analytics Core Reporting API.
         }
       },
 
-      get hasRequiredParams() {
+      get _hasRequiredParams() {
         return !!(this.ids && this.metrics && this.startDate && this.endDate);
       },
 

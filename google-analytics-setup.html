@@ -14,7 +14,7 @@ Loads gapi.client.analytics, and watches user signed-in state.
 <dom-module id="google-analytics-setup">
   <template>
     <google-client-loader id="api"
-      name="analytics" 
+      name="analytics"
       version="v3"
       on-google-api-load="handleApiLoad"
       on-google-api-load-error="handleApiFailedToLoad"></google-client-loader>
@@ -79,9 +79,11 @@ Loads gapi.client.analytics, and watches user signed-in state.
       this._setApiReady(false);
       console.error("Api failed to load: ", this.$.api.name, this.$.api.version);
     },
+
     handleAuthSuccess: function() {
       this._setAuthorized(true);
     },
+
     handleAuthSignout: function() {
       this._setAuthorized(false);
     }

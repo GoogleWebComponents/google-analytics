@@ -142,8 +142,8 @@ Element for selecting the view ID (ids) value for queries inside a
       },
 
        /**
-       * True if setup is ready 
-       * 
+       * True if setup is ready
+       *
        * @attribute setupReady
        * @type Boolean
        */
@@ -176,10 +176,10 @@ Element for selecting the view ID (ids) value for queries inside a
         this.account = null;
         this.property = null;
         this.view = null;
-        this.ids = null;      
+        this.ids = null;
       }
     },
-    
+
     /**
      * The `updateAccount` method is bound to the change event on the
      * account `<select>`. It updates the property and view `<select>`s based
@@ -188,7 +188,6 @@ Element for selecting the view ID (ids) value for queries inside a
     updateAccount: function() {
       this.account = this.summaries.getAccount(this.$.account.value);
     },
-
 
     /**
      * The `updateProperty` method is bound to the change event on the
@@ -199,7 +198,6 @@ Element for selecting the view ID (ids) value for queries inside a
       this.property = this.summaries.getProperty(this.$.property.value);
     },
 
-
     /**
      * The `updateView` method is bound to the change event on the
      * view `<select>`. It updates the `ids` attribute.
@@ -208,13 +206,11 @@ Element for selecting the view ID (ids) value for queries inside a
       this.view = this.summaries.getView(this.$.view.value);
     },
 
-
     accountChanged: function(newAccount, oldAccount) {
       if (newAccount) {
         this.property = newAccount.properties[0];
       }
     },
-
 
     propertyChanged: function(newProperty, oldProperty) {
       if (newProperty) {
@@ -222,7 +218,6 @@ Element for selecting the view ID (ids) value for queries inside a
         // this.view = Path.get('views[0]').getValueFrom(newProperty);
       }
     },
-
 
     viewChanged: function(newView, oldView) {
       this.ids = newView && 'ga:' + newView.id;
