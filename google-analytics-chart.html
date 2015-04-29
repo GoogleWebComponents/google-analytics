@@ -44,7 +44,7 @@ Google Chart.
       sampling-level="{{samplingLevel}}"
       start-index="{{startIndex}}"
       max-results="{{maxResults}}"
-      output="{{output}}"
+      output="dataTable"
       fields="{{fields}}"
       src-param="gwc-ga-chart"
       ></google-analytics-query>
@@ -166,7 +166,7 @@ Google Chart.
         /**
          * google-analytics-query passthrough properties
          * See google-analytics-query for documentation
-         * startDate, endDate, data, ids, metrics, dimensions, sort, filters, segment, samplingLevel, startIndex, maxResults, output, fields
+         * startDate, endDate, data, ids, metrics, dimensions, sort, filters, segment, samplingLevel, startIndex, maxResults, fields
          */
         startDate: {
           type: String,
@@ -203,10 +203,6 @@ Google Chart.
         },
         maxResults: {
           type: Number
-        },
-        output: {
-          type: String,
-          value: 'dataTable'
         },
         fields: {
           type: String
