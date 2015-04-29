@@ -67,6 +67,7 @@ Google Chart.
       is: 'google-analytics-chart',
 
       properties: {
+
         /**
          * Sets the type of the chart.
          *
@@ -105,6 +106,7 @@ Google Chart.
           type: Number,
           value:  320,
         },
+
         /**
          * Sets the options for the chart.
          *
@@ -139,6 +141,7 @@ Google Chart.
           notify: true,
           reflectToAttribute: true
         },
+
         /**
          * True if the chart is currently loading data.
          *
@@ -151,6 +154,7 @@ Google Chart.
           notify: true,
           reflectToAttribute: true
         },
+
         /**
          * True if setup is ready
          *
@@ -170,39 +174,51 @@ Google Chart.
         startDate: {
           type: String,
         },
+
         endDate: {
           type: String
         },
+
         data: {
           type: Object
         },
+
         ids: {
           type: String
         },
+
         metrics: {
           type: String
         },
+
         dimensions: {
           type: String
         },
+
         sort: {
           type: String
         },
+
         filters: {
           type: String
         },
+
         segment: {
           type: String
         },
+
         samplingLevel: {
           type: String
         },
+
         startIndex: {
           type: Number
         },
+
         maxResults: {
           type: Number
         }
+
       },
 
       ready: function() {
