@@ -45,7 +45,7 @@ update query parameters.
     <template is="x-if" if="{{hasError}}">
       <div class="error">{{parent.errorMessage}}</div>
     </template>
-    <google-signin-aware 
+    <google-signin-aware
       on-google-signin-aware-success="signedIn"
       on-google-signin-aware-signed-out="signedOut"></google-signin-aware>
     <content id="content"></content>
@@ -55,9 +55,17 @@ update query parameters.
 
   Polymer({
 
-    is: 'google-analytics-dashboard', 
+    is: 'google-analytics-dashboard',
 
     properties: {
+      /**
+       * The `query` attribute represents the internal query object of this
+       * dashboard. It is updated when control elements fire the
+       * `analytics-dashboard-control-change` event and pass along query data.
+       *
+       * @attribute query
+       * @type object
+       */
       query: {
         type: Object,
         value: function() { return {} }
@@ -85,15 +93,6 @@ update query parameters.
       'analytics-query-error': 'handleQueryError'
     },
     ready: function() {
-      /**
-       * The `query` attribute represents the internal query object of this
-       * dashboard. It is updated when control elements fire the
-       * `analytics-dashboard-control-change` event and pass along query data.
-       *
-       * @attribute query
-       * @type object
-       */
-
      this.updateChildren();
     },
 
@@ -121,8 +120,7 @@ update query parameters.
      * @method updateChildren
      */
     updateChildren: function() {
-      if (!this.authorized)
-        return;
+      if (!this.authorized) return;
       var charts = Polymer.dom(this).querySelectorAll('google-analytics-chart');
       for (var i = 0, chart; chart = charts[i]; i++) {
         Object.keys(this.query).forEach(function(key) {
@@ -137,10 +135,10 @@ update query parameters.
     signedOut: function() {
       this.authorized = false;
     },
-    handleQueryError: function(ev) {
-      this.errorMessage = ev.detail;
+    handleQueryError: function(event) {
+      this.errorMessage = event.detail;
       // Invalid credentials after a multi-hour session have been observed in the wild.
-      this.errorMessage = "Error loading data: " + ev.detail.message + ". Your session might have expired.";
+      this.errorMessage = "Error loading data: " + event.detail.message + ". Your session might have expired.";
     },
     computeHasError: function(errorMessage) {
       if (errorMessage)
