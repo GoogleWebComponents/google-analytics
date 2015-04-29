@@ -47,6 +47,7 @@ Element for querying the Google Analytics Core Reporting API.
          */
 
       properties: {
+
         /**
          * The `data` attribute is the response from a query to the Google
          * Analytics Core Reporting API. This value will be updated as
@@ -60,6 +61,7 @@ Element for querying the Google Analytics Core Reporting API.
           value: function() { return {}},
           notify: true
         },
+
         /**
          * The `ids` attribute is the unique table ID of the form ga:XXXX,
          * where XXXX is the Analytics view (profile) ID for which the query
@@ -76,6 +78,7 @@ Element for querying the Google Analytics Core Reporting API.
           type: String,
           value: ''
         },
+
         /**
          * The `startDate` attribute is the start date for fetching Analytics
          * data. Requests can specify a start date formatted as YYYY-MM-DD, or
@@ -123,6 +126,7 @@ Element for querying the Google Analytics Core Reporting API.
           type: String,
           value: ''
         },
+
         /**
          * The `dimensions` attribute is a list of comma-separated dimensions
          * for your Analytics data, such as ga:browser,ga:city.
@@ -136,6 +140,7 @@ Element for querying the Google Analytics Core Reporting API.
           type: String,
           value: ''
         },
+
         /**
          * The `sort` attribute is a list of comma-separated dimensions
          * and metrics indicating the sorting order and sorting direction for
@@ -146,6 +151,7 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute sort
          * @type string
          */
+
         sort: {
           type: String,
           value: ''
@@ -163,6 +169,7 @@ Element for querying the Google Analytics Core Reporting API.
           type: String,
           value: ''
         },
+
         /**
          * The `segment` attribute segments the data returned for your
          * request.
@@ -176,6 +183,7 @@ Element for querying the Google Analytics Core Reporting API.
           type: String,
           value: ''
         },
+
         /**
          * The `samplingLevel` attribute sets the desired sampling level.
          * Allowed Values: `DEFAULT`, `FASTER`, `HIGHER_PRECISION`.
@@ -185,10 +193,12 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute samplingLevel
          * @type string
          */
+
         samplingLevel: {
           type: String,
           value: ''
         },
+
         /**
          * The `startIndex` attribute sets the first row of data to retrieve,
          * starting at 1. Use this parameter as a pagination mechanism along
@@ -203,6 +213,7 @@ Element for querying the Google Analytics Core Reporting API.
           type: Number,
           value: 0
         },
+
         /**
          * The `maxResults` attribute is the maximum number of rows to include
          * in the response.
@@ -216,6 +227,7 @@ Element for querying the Google Analytics Core Reporting API.
           type: Number,
           value: 0
         },
+
         /**
          * The `output` attribute sets the desired output type for the
          * Analytics data returned in the response. Acceptable values are json
@@ -230,6 +242,7 @@ Element for querying the Google Analytics Core Reporting API.
           type: String,
           value: ''
         },
+
         /**
          * The `fields` attribute is a selector specifying a subset of
          * fields to include in the response.
@@ -272,6 +285,7 @@ Element for querying the Google Analytics Core Reporting API.
         getDataResponseHandler: {
           type: Function
         },
+
         /**
          * True if setup is ready
          *
