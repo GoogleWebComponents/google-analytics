@@ -2,7 +2,7 @@
 <link rel="import" href="../google-chart/google-chart.html">
 <link rel="import" href="../promise-polyfill/promise-polyfill-lite.html">
 <link rel="import" href="google-analytics-query.html">
-<link rel="import" href="google-analytics-setup.html">
+<link rel="import" href="google-analytics-loader.html">
 
 <!--
 Element for displaying the results of a Google Analytics query in a
@@ -28,7 +28,7 @@ Google Chart.
 
 <dom-module is="google-analytics-chart">
   <template>
-    <google-analytics-setup all-ready="{{setupReady}}"></google-analytics-setup>
+    <google-analytics-loader all-ready="{{setupReady}}"></google-analytics-loader>
     <google-analytics-query id="query"
       loading="{{loading}}"
       get-data-response-handler="{{_boundResponseHandler}}"
@@ -61,8 +61,9 @@ Google Chart.
 <script>
 
   (function() {
+    "use strict";
 
-    Polymer( {
+    Polymer({
 
       is: 'google-analytics-chart',
 
@@ -126,7 +127,7 @@ Google Chart.
          */
         options: {
           type: Object,
-          value: function() { return null;}
+          value: function() { return null; }
         },
 
         /**
@@ -227,7 +228,9 @@ Google Chart.
       },
 
       setupReadyChanged: function(newVal, oldVal) {
-        if (newVal) metadata.get();
+        if (newVal) {
+          metadata.get();
+        }
       },
 
       handleResponse: function(response) {

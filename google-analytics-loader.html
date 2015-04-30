@@ -4,14 +4,14 @@
 <link rel="import" href="../promise-polyfill/promise-polyfill-lite.html">
 
 <!--
-google-analytics-setup is used internally by elements that need to know api state, and user state.
+google-analytics-loader is used internally by elements that need to know api state, and user state.
 
 Loads gapi.client.analytics, and watches user signed-in state.
 
-@element google-analytics-setup
+@element google-analytics-loader
 @homepage https://googlewebcomponents.github.io/google-analytics
 -->
-<dom-module id="google-analytics-setup">
+<dom-module id="google-analytics-loader">
   <template>
     <google-client-loader id="api"
       name="analytics"
@@ -30,7 +30,7 @@ Loads gapi.client.analytics, and watches user signed-in state.
   'use strict';
   Polymer({
 
-    is: 'google-analytics-setup',
+    is: 'google-analytics-loader',
 
     properties: {
       /**

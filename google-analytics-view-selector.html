@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="account-summaries-import.html">
-<link rel="import" href="google-analytics-setup.html">
+<link rel="import" href="google-analytics-loader.html">
 
 <!--
 Element for selecting the view ID (ids) value for queries inside a
@@ -35,7 +35,7 @@ Element for selecting the view ID (ids) value for queries inside a
     }
   </style>
   <template>
-    <google-analytics-setup all-ready="{{setupReady}}"></google-analytics-setup>
+    <google-analytics-loader all-ready="{{setupReady}}"></google-analytics-loader>
     <span class="control">
       <label for="account">Account</label>
       <select id="account"

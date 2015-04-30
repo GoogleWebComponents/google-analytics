@@ -58,7 +58,7 @@ update query parameters.
        */
       query: {
         type: Object,
-        value: function() { return {} }
+        value: function() { return {}; }
       },
 
       authorized: {
@@ -101,7 +101,9 @@ update query parameters.
      * @method updateChildren
      */
     updateChildren: function() {
-      if (!this.authorized) return;
+      if (!this.authorized) {
+        return;
+      }
       var charts = Polymer.dom(this).querySelectorAll('google-analytics-chart');
       for (var i = 0, chart; chart = charts[i]; i++) {
         Object.keys(this.query).forEach(function(key) {
