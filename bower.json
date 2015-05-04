@@ -25,10 +25,13 @@
     "../"
   ],
   "dependencies": {
-    "es6-promise": "^2.0.0",
-    "ga-api-utils": "googleanalytics/javascript-api-utils#^0.1.0",
-    "google-chart": "GoogleWebComponents/google-chart#^0.2.0",
-    "google-signin": "GoogleWebComponents/google-signin#^0.3.0",
-    "polymer": "Polymer/polymer#^0.5.1"
+    "polymer": "Polymer/polymer#v0.8.0-rc.7",
+    "promise-polyfill": "polymerlabs/promise-polyfill#master",
+    "ga-api-utils": "googleanalytics/javascript-api-utils#^0.2.0",
+    "google-chart": "GoogleWebComponents/google-chart#0.8-preview",
+    "google-signin": "GoogleWebComponents/google-signin#0.8-preview"
+  },
+  "devDependencies": {
+    "iron-doc-viewer": "PolymerElements/iron-doc-viewer#^0.8.0"
   }
 }

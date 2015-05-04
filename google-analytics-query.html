@@ -1,4 +1,5 @@
-<link rel="import" href="google-analytics-base.html">
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="google-analytics-loader.html">
 
 <!--
 Element for querying the Google Analytics Core Reporting API.
@@ -20,30 +21,21 @@ Element for querying the Google Analytics Core Reporting API.
 @homepage https://googlewebcomponents.github.io/google-analytics
 -->
 
-<polymer-element
-  name="google-analytics-query"
-  extends="google-analytics-base"
-  attributes="
-    data
-    ids
-    startDate
-    endDate
-    metrics
-    dimensions
-    sort
-    filters
-    segment
-    samplingLevel
-    startIndex
-    maxResults
-    output
-    fields">
 
-  <script>
+<dom-module id="google-analytics-query">
+  <template>
+    <google-analytics-loader all-ready="{{setupReady}}"></google-analytics-loader>
+  </template>
+</dom-module>
+<script>
 
-    (function() {
+  (function() {
 
-      Polymer('google-analytics-query', {
+    'use strict';
+
+    Polymer({
+
+      is: 'google-analytics-query',
         /**
          * Fired when a query is successfully run and data has been stored.
          *
@@ -56,6 +48,8 @@ Element for querying the Google Analytics Core Reporting API.
          * @event analytics-query-error
          */
 
+      properties: {
+
         /**
          * The `data` attribute is the response from a query to the Google
          * Analytics Core Reporting API. This value will be updated as
@@ -64,6 +58,11 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute data
          * @type object
          */
+        data: {
+          type: Object,
+          value: function() { return {}},
+          notify: true
+        },
 
         /**
          * The `ids` attribute is the unique table ID of the form ga:XXXX,
@@ -77,6 +76,10 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute ids
          * @type string
          */
+        ids: {
+          type: String,
+          value: ''
+        },
 
         /**
          * The `startDate` attribute is the start date for fetching Analytics
@@ -90,7 +93,10 @@ Element for querying the Google Analytics Core Reporting API.
          * @default '7daysAgo'
          * @type string
          */
-        startDate: '7daysAgo',
+        startDate: {
+          type: String,
+          value: '7daysAgo'
+        },
 
         /**
          * The `endDate` attribute is the end date for fetching Analytics
@@ -104,7 +110,10 @@ Element for querying the Google Analytics Core Reporting API.
          * @default 'yesterday'
          * @type string
          */
-        endDate: 'yesterday',
+        endDate: {
+          type: String,
+          value: 'yesterday'
+        },
 
         /**
          * The `metrics` attribute is a list of comma-separated metrics,
@@ -115,6 +124,10 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute metrics
          * @type string
          */
+        metrics: {
+          type: String,
+          value: ''
+        },
 
         /**
          * The `dimensions` attribute is a list of comma-separated dimensions
@@ -125,6 +138,10 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute dimensions
          * @type string
          */
+        dimensions: {
+          type: String,
+          value: ''
+        },
 
         /**
          * The `sort` attribute is a list of comma-separated dimensions
@@ -137,6 +154,10 @@ Element for querying the Google Analytics Core Reporting API.
          * @type string
          */
 
+        sort: {
+          type: String,
+          value: ''
+        },
         /**
          * The `filters` attribute is dimension or metric filters that restrict
          * the data returned for your request.
@@ -146,6 +167,10 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute filters
          * @type string
          */
+        filters: {
+          type: String,
+          value: ''
+        },
 
         /**
          * The `segment` attribute segments the data returned for your
@@ -156,6 +181,10 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute segment
          * @type string
          */
+        segment: {
+          type: String,
+          value: ''
+        },
 
         /**
          * The `samplingLevel` attribute sets the desired sampling level.
@@ -167,6 +196,11 @@ Element for querying the Google Analytics Core Reporting API.
          * @type string
          */
 
+        samplingLevel: {
+          type: String,
+          value: ''
+        },
+
         /**
          * The `startIndex` attribute sets the first row of data to retrieve,
          * starting at 1. Use this parameter as a pagination mechanism along
@@ -177,6 +211,10 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute startIndex
          * @type integer
          */
+        startIndex: {
+          type: Number,
+          value: 0
+        },
 
         /**
          * The `maxResults` attribute is the maximum number of rows to include
@@ -187,6 +225,10 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute maxResults
          * @type integer
          */
+        maxResults: {
+          type: Number,
+          value: 0
+        },
 
         /**
          * The `output` attribute sets the desired output type for the
@@ -198,6 +240,10 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute output
          * @type string
          */
+        output: {
+          type: String,
+          value: ''
+        },
 
         /**
          * The `fields` attribute is a selector specifying a subset of
@@ -208,105 +254,136 @@ Element for querying the Google Analytics Core Reporting API.
          * @attribute fields
          * @type string
          */
-
-        observe: {
-          ids: 'getData',
-          startDate: 'getData',
-          endDate: 'getData',
-          metrics: 'getData',
-          dimensions: 'getData',
-          sort: 'getData',
-          filters: 'getData',
-          segment: 'getData',
-          samplingLevel: 'getData',
-          startIndex: 'getData',
-          maxResults: 'getData',
-          output: 'getData',
-          fields: 'getData'
+        fields: {
+          type: String,
+          value: ''
         },
 
-        userAuthorized: function() {
-          this.super();
+        /**
+         * GA team internal variable for analytics purposes.
+         */
+        _srcParam: {
+          type: String,
+          value: 'gwc-ga-query'
+        },
+
+        /**
+         * true if data is getting loaded
+         * @attribute loading
+         * @type Boolean
+         */
+        loading: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
+
+        /**
+         *
+         *
+         * @attribute getDataResponseHandler
+         * @type Function
+         */
+        getDataResponseHandler: {
+          type: Function
+        },
+
+        /**
+         * True if setup is ready
+         *
+         * @attribute setupReady
+         * @type Boolean
+         */
+        setupReady: {
+          type: Boolean,
+          observer: '_setupReadyChanged'
+        }
+
+      },
+
+      observers: [
+        'getData(ids,startDate,endDate,metrics,dimensions,sort,filters,segment,samplingLevel,startIndex,maxResults,output,fields)'
+      ],
+
+      _setupReadyChanged: function(newVal) {
+        if (newVal)
           this.getData();
-        },
-
-        userUnauthorized: function() {
-          this.super();
+        else
           this.data = null;
-        },
+      },
 
-        /**
-         * Query the Google Analytics Core Reporting API.
-         *
-         * @method getData
-         */
-        getData: function() {
-          if (this.authorized && this.hasRequiredParams) {
+      /**
+       * Query the Google Analytics Core Reporting API.
+       *
+       * @method getData
+       */
+      getData: function() {
+        if (this.setupReady && this._hasRequiredParams) {
+          this.loading = true;
+          // Required parameters.
+          var query = {
+            'ids': this.ids,
+            'start-date': this.startDate,
+            'end-date': this.endDate,
+            'metrics': this.metrics,
+            '_src': this._srcParam
+          };
 
-            // Required parameters.
-            var query = {
-              'ids': this.ids,
-              'start-date': this.startDate,
-              'end-date': this.endDate,
-              'metrics': this.metrics
-            };
+          // Optional parameters.
+          if (this.dimensions) query.dimensions = this.dimensions;
+          if (this.sort) query.sort = this.sort;
+          if (this.filters) query.filters = this.filters;
+          if (this.segment) query.segment = this.segment;
+          if (this.samplingLevel) query.samplingLevel = this.samplingLevel;
+          if (this.startIndex) query['start-index'] = this.startIndex;
+          if (this.maxResults) query['max-results'] = this.maxResults;
+          if (this.output) query.output = this.output;
+          if (this.fields) query.fields = this.fields;
 
-            // Optional parameters.
-            if (this.dimensions) query.dimensions = this.dimensions;
-            if (this.sort) query.sort = this.sort;
-            if (this.filters) query.filters = this.filters;
-            if (this.segment) query.segment = this.segment;
-            if (this.samplingLevel) query.samplingLevel = this.samplingLevel;
-            if (this.startIndex) query['start-index'] = this.startIndex;
-            if (this.maxResults) query['max-results'] = this.maxResults;
-            if (this.output) query.output = this.output;
-            if (this.fields) query.fields = this.fields;
+          gapi.client.analytics.data.ga.get(query)
+              .execute(this.handleResponse.bind(this));
 
-            this.beforeQuerySend(query);
+          return true;
+        }
+      },
 
-            gapi.client.analytics.data.ga.get(query)
-                .execute(this.handleResponse.bind(this));
+      /**
+       * setData sets data fetched by getData.
+       * Use it if you override getData response processing
+       * @method setData
+       */
+      setData: function(data) {
+        this.data = data;
+        this.fire('analytics-query-success', data);
+      },
 
-            return true;
-          }
-        },
+      /**
+       * The callback for the query run in `getData`. This is a separate
+       * function so subclasses can alter how the response is handled.
+       *
+       * @method handleResponse
+       */
+      handleResponse: function(response) {
+        this.loading = false;
 
-        /**
-         * The callback for the query run in `getData`. This is a separate
-         * function so subclasses can alter how the response is handled.
-         *
-         * @method handleResponse
-         */
-        handleResponse: function(response) {
-          if (response.error) {
-            this.fire('analytics-query-error', response.error);
-          }
-          else {
-            this.data = response;
-            this.fire('analytics-query-success', response);
-          }
-        },
+        if (response.error) {
+          this.fire('analytics-query-error', response.error);
+        }
+        else {
+          if (this.getDataResponseHandler)
+            this.getDataResponseHandler(response)
+          else
+            this.setData(response);
+        }
+      },
 
-        /**
-         * A hook to alter the query params object (if needed) before
-         * the request is made. This method allows subclasses to change the
-         * request without overriding the entire `getData` method.
-         *
-         * @method beforeQuerySend
-         * @param {Object} query - The query params object.
-         */
-        beforeQuerySend: function(query) {
-          query._src = 'gwc-ga-query';
-        },
+      get _hasRequiredParams() {
+        return !!(this.ids && this.metrics && this.startDate && this.endDate);
+      },
 
-        get hasRequiredParams() {
-          return !!(this.ids && this.metrics && this.startDate && this.endDate);
-        },
+    });
 
-      });
+  }());
 
-    }());
+</script>
 
-  </script>
-
-</polymer-element>

@@ -1,5 +1,5 @@
-<link rel="import" href="google-analytics-base.html">
-
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../google-signin/google-signin-aware.html">
 <!--
 Element for grouping Google Analytics elements together.
 
@@ -32,19 +32,25 @@ update query parameters.
 @homepage https://googlewebcomponents.github.io/google-analytics
 -->
 
-<polymer-element
-  name="google-analytics-dashboard"
-  extends="google-analytics-base"
-  on-analytics-dashboard-control-change="{{queryUpdated}}">
 
+<dom-module id="google-analytics-dashboard">
   <template>
-    <content></content>
+    <google-signin-aware
+      on-google-signin-aware-success="signedIn"
+      on-google-signin-aware-signed-out="signedOut"></google-signin-aware>
+    <content id="content"></content>
   </template>
-  <script>
+</dom-module>
+<script>
 
-    Polymer('google-analytics-dashboard', {
+  (function() {
+    'use strict';
 
-      ready: function() {
+    Polymer({
+
+      is: 'google-analytics-dashboard',
+
+      properties: {
         /**
          * The `query` attribute represents the internal query object of this
          * dashboard. It is updated when control elements fire the
@@ -53,9 +59,25 @@ update query parameters.
          * @attribute query
          * @type object
          */
-        this.query = {};
+        query: {
+          type: Object,
+          value: function() { return {}; }
+        },
 
-        this.updateChildren();
+        authorized: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        }
+
+      },
+
+      listeners: {
+        'analytics-dashboard-control-change': 'queryUpdated'
+      },
+
+      ready: function() {
+       this.updateChildren();
       },
 
       /**
@@ -82,16 +104,28 @@ update query parameters.
        * @method updateChildren
        */
       updateChildren: function() {
-        var charts = this.querySelectorAll('google-analytics-chart');
+        if (!this.authorized) {
+          return;
+        }
+        var charts = Polymer.dom(this).querySelectorAll('google-analytics-chart');
         for (var i = 0, chart; chart = charts[i]; i++) {
           Object.keys(this.query).forEach(function(key) {
             chart[key] = this.query[key];
           }.bind(this));
         }
+      },
+
+      signedIn: function() {
+        this.authorized = true;
+        this.updateChildren();
+      },
+
+      signedOut: function() {
+        this.authorized = false;
       }
 
     });
 
-  </script>
+  })();
 
-</polymer-element>
+</script>
