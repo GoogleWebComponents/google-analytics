@@ -25,7 +25,7 @@
     "../"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#0.8-preview",
+    "polymer": "Polymer/polymer#v0.8.0-rc.7",
     "promise-polyfill": "polymerlabs/promise-polyfill#master",
     "ga-api-utils": "googleanalytics/javascript-api-utils#^0.2.0",
     "google-chart": "GoogleWebComponents/google-chart#0.8-preview",
