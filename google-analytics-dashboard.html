@@ -25,19 +25,14 @@ update query parameters.
 
     </google-analytics-dashboard>
 
-@element google-analytics-dashboard
-@extends google-analytics-base
-@blurb Element for grouping Google Analytics control and visualization elements.
-@status alpha
-@homepage https://googlewebcomponents.github.io/google-analytics
 -->
 
 
 <dom-module id="google-analytics-dashboard">
   <template>
     <google-signin-aware
-      on-google-signin-aware-success="signedIn"
-      on-google-signin-aware-signed-out="signedOut"></google-signin-aware>
+      on-google-signin-aware-success="_signedIn"
+      on-google-signin-aware-signed-out="_signedOut"></google-signin-aware>
     <content id="content"></content>
   </template>
 </dom-module>
@@ -55,15 +50,15 @@ update query parameters.
          * The `query` attribute represents the internal query object of this
          * dashboard. It is updated when control elements fire the
          * `analytics-dashboard-control-change` event and pass along query data.
-         *
-         * @attribute query
-         * @type object
          */
         query: {
           type: Object,
           value: function() { return {}; }
         },
 
+        /**
+         * True if user has been authorized
+         */
         authorized: {
           type: Boolean,
           value: false,
@@ -115,12 +110,12 @@ update query parameters.
         }
       },
 
-      signedIn: function() {
+      _signedIn: function() {
         this.authorized = true;
         this.updateChildren();
       },
 
-      signedOut: function() {
+      _signedOut: function() {
         this.authorized = false;
       }
 
