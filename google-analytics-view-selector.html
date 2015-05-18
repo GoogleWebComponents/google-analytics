@@ -41,7 +41,7 @@ Element for selecting the view ID (ids) value for queries inside a
       <select id="account"
         on-change="updateAccount"
         value="{{account.id}}">
-        <template is="x-repeat" items="{{accounts}}">
+        <template is="dom-repeat" items="{{accounts}}">
           <option value="{{item.id}}">{{item.name}}</option>
         </template>
       </select>
@@ -51,7 +51,7 @@ Element for selecting the view ID (ids) value for queries inside a
       <select id="property"
         on-change="updateProperty"
         value="{{property.id}}">
-        <template is="x-repeat" items="{{account.properties}}">
+        <template is="dom-repeat" items="{{account.properties}}">
           <option value="{{item.id}}">{{item.name}}</option>
         </template>
       </select>
@@ -61,7 +61,7 @@ Element for selecting the view ID (ids) value for queries inside a
       <select id="view"
         on-change="updateView"
         value="{{view.id}}">
-        <template is="x-repeat"  items="{{property.views}}">
+        <template is="dom-repeat"  items="{{property.views}}">
           <option value="{{item.id}}">{{item.name}}</option>
         </template>
       </select>
