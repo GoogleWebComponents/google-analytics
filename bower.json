@@ -23,7 +23,7 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.0.0",
-    "promise-polyfill": "PolymerLabs/promise-polyfill#^0.9.1",
+    "promise-polyfill": "PolymerLabs/promise-polyfill#^1.0.0",
     "ga-api-utils": "googleanalytics/javascript-api-utils#^0.2.0",
     "google-chart": "GoogleWebComponents/google-chart#^1.0.0",
     "google-signin": "GoogleWebComponents/google-signin#^1.0.0"
