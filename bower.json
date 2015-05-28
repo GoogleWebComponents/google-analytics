@@ -29,6 +29,6 @@
     "google-signin": "GoogleWebComponents/google-signin#^1.0.0"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.2"
   }
 }
