@@ -22,13 +22,13 @@
     "/demo/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.9.0",
+    "polymer": "Polymer/polymer#^1.0.0",
     "promise-polyfill": "PolymerLabs/promise-polyfill#^0.9.1",
     "ga-api-utils": "googleanalytics/javascript-api-utils#^0.2.0",
     "google-chart": "GoogleWebComponents/google-chart#^1.0.0",
     "google-signin": "GoogleWebComponents/google-signin#^1.0.0"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^0.9.4"
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
   }
 }
