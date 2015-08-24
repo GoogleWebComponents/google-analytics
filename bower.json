@@ -1,6 +1,6 @@
 {
   "name": "google-analytics",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Encapsulates Google Analytics dashboard features into web components",
   "homepage": "https://googlewebcomponents.github.io/google-analytics",
   "authors": [
