@@ -21,9 +21,11 @@ Google Chart.
 
 @element google-analytics-chart
 @demo
+@homepage https://googlewebcomponents.github.io/google-analytics
 -->
 
 <dom-module is="google-analytics-chart">
+
   <style>
     :host {
       display: -webkit-flex;
@@ -35,13 +37,19 @@ Google Chart.
       width: 400px;
       height: 300px;
     }
-    google-chart {
+    :host > * {
+      -webkit-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+      flex: 0 0 auto;
+    }
+    :host > google-chart {
       -webkit-flex: 1 0 0%;
       -ms-flex: 1 0 0%;
       flex: 1 0 0%;
       width: auto;
     }
   </style>
+
   <template>
     <google-analytics-loader all-ready="{{setupReady}}"></google-analytics-loader>
     <google-analytics-query id="query"
@@ -69,6 +77,7 @@ Google Chart.
     </google-chart>
     <content select="footer"></content>
   </template>
+
 </dom-module>
 
 <script>
@@ -353,6 +362,12 @@ Google Chart.
             minValue: 0,
             colors: ['#aadff3', '#058dc7']
           }
+        },
+        pie: {
+          legend: {
+            position: 'right'
+          },
+          pieHole: .4
         }
       };
       return merge({}, chartOptions.base, chartOptions[type]);
@@ -417,7 +432,7 @@ Google Chart.
       });
       return target;
     }
+
   }());
 
 </script>
-

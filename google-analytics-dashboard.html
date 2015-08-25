@@ -1,7 +1,8 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../google-signin/google-signin-aware.html">
+
 <!--
-Element for grouping Google Analytics elements together.
+Container element for binding Google Analytics controls to Google Analytics charts.
 
 `<google-analytics-chart>` elements inside a `<google-analytics-dashboard>`
 element will automatically update as control elements (e.g.
@@ -25,20 +26,26 @@ update query parameters.
 
     </google-analytics-dashboard>
 
+@element google-analytics-dashboard
+@demo
+@homepage https://googlewebcomponents.github.io/google-analytics
 -->
 
-
 <dom-module id="google-analytics-dashboard">
+
   <template>
     <google-signin-aware
       on-google-signin-aware-success="_signedIn"
       on-google-signin-aware-signed-out="_signedOut"></google-signin-aware>
     <content id="content"></content>
   </template>
+
 </dom-module>
+
 <script>
 
   (function() {
+
     'use strict';
 
     Polymer({
@@ -121,6 +128,6 @@ update query parameters.
 
     });
 
-  })();
+  }());
 
 </script>
