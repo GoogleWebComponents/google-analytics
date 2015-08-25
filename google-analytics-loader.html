@@ -9,9 +9,12 @@ google-analytics-loader is used internally by elements that need to know api sta
 Loads gapi.client.analytics, and watches user signed-in state.
 
 @element google-analytics-loader
+@demo
 @homepage https://googlewebcomponents.github.io/google-analytics
 -->
+
 <dom-module id="google-analytics-loader">
+
   <template>
     <google-client-loader id="api"
       name="analytics"
@@ -23,9 +26,11 @@ Loads gapi.client.analytics, and watches user signed-in state.
       on-google-signin-aware-success="handleAuthSuccess"
       on-google-signin-aware-signed-out="handleAuthSignout"></google-signin-aware>
   </template>
+
 </dom-module>
 
 <script>
+
   (function() {
 
     'use strict';
@@ -91,6 +96,6 @@ Loads gapi.client.analytics, and watches user signed-in state.
       }
     });
 
-  })();
+  }());
 
 </script>

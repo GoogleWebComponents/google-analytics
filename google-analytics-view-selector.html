@@ -20,20 +20,33 @@ Element for selecting the view ID (ids) value for queries inside a
     </google-analytics-dashboard>
 
 @element google-analytics-view-selector
-@extends google-analytics-base
-@blurb Element for selecting the ids value for Google Analytics queries
-@status alpha
+@demo
 @homepage https://googlewebcomponents.github.io/google-analytics
 -->
 
 <dom-module id="google-analytics-view-selector">
+
   <style>
+    :host {
+      display: inline-block;
+    }
+    .control {
+      @apply(--google-analytics-view-selector-control);
+    }
+    label {
+      @apply(--google-analytics-view-selector-label);
+    }
     select {
       color: inherit;
       font: inherit;
       margin: 0;
+      @apply(--google-analytics-view-selector-select);
+    }
+    select:focus {
+      @apply(--google-analytics-view-selector-select-focus);
     }
   </style>
+
   <template>
     <google-analytics-loader all-ready="{{setupReady}}"></google-analytics-loader>
     <span class="control">
@@ -67,10 +80,13 @@ Element for selecting the view ID (ids) value for queries inside a
       </select>
     </span>
   </template>
+
 </dom-module>
+
 <script>
 
   (function() {
+
     'use strict';
 
     Polymer({
@@ -270,6 +286,6 @@ Element for selecting the view ID (ids) value for queries inside a
 
     });
 
-  })();
+  }());
 
 </script>
