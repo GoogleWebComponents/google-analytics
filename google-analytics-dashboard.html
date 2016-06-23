@@ -79,7 +79,7 @@ update query parameters.
       },
 
       ready: function() {
-       this.updateChildren();
+        this.updateChildren();
       },
 
       /**
@@ -91,6 +91,10 @@ update query parameters.
        * @param {CustomEvent} event - The event with the query data.
        */
       queryUpdated: function(event) {
+        if (!this.query) {
+          this.query = {};
+        }
+
         // Update `this.query` with the passed event data.
         Object.keys(event.detail).forEach(function(key) {
           this.query[key] = event.detail[key];
