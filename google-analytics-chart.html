@@ -223,6 +223,8 @@ Google Chart.
 
       ready: function() {
         this._boundResponseHandler = this.handleResponse.bind(this);
+
+        this.$.chart.options = this.$.chart.options || {};
         merge(this.$.chart.options, getChartOptions(this.type), this.options);
       },
 
