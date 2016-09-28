@@ -16,17 +16,40 @@ Google Chart.
       metrics="ga:sessions"
       dimensions="ga:country"
       sort="-ga:sessions"
-      maxResults="5">
+      max-results="5">
     </google-analytics-chart>
 
 @element google-analytics-chart
-@extends google-analytics-query
-@blurb Element for displaying Google Analytics data visualizations.
-@status alpha
+@demo
 @homepage https://googlewebcomponents.github.io/google-analytics
 -->
 
 <dom-module is="google-analytics-chart">
+
+  <style>
+    :host {
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      width: 400px;
+      height: 300px;
+    }
+    :host > * {
+      -webkit-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+      flex: 0 0 auto;
+    }
+    :host > google-chart {
+      -webkit-flex: 1 0 0%;
+      -ms-flex: 1 0 0%;
+      flex: 1 0 0%;
+      width: auto;
+    }
+  </style>
+
   <template>
     <google-analytics-loader all-ready="{{setupReady}}"></google-analytics-loader>
     <google-analytics-query id="query"
@@ -50,12 +73,11 @@ Google Chart.
     <content select="header,h1,h2,h3,h4,h5,h6"></content>
     <google-chart id="chart"
       type="{{type}}"
-      width="{{width}}"
-      height="{{height}}"
       data="{{data.dataTable}}">
     </google-chart>
     <content select="footer"></content>
   </template>
+
 </dom-module>
 
 <script>
@@ -83,30 +105,6 @@ Google Chart.
         type: {
           type: String,
           value: 'area'
-        },
-
-        /**
-         * Sets the width of the chart on the page.
-         *
-         * @attribute width
-         * @default 480
-         * @type number of string
-         */
-        width: {
-          type: Number,
-          value: 480
-        },
-
-        /**
-         * Sets the height of the chart on the page.
-         *
-         * @attribute height
-         * @default 320
-         * @type number or string
-         */
-        height: {
-          type: Number,
-          value:  320,
         },
 
         /**
@@ -225,6 +223,8 @@ Google Chart.
 
       ready: function() {
         this._boundResponseHandler = this.handleResponse.bind(this);
+
+        this.$.chart.options = this.$.chart.options || {};
         merge(this.$.chart.options, getChartOptions(this.type), this.options);
       },
 
@@ -364,6 +364,12 @@ Google Chart.
             minValue: 0,
             colors: ['#aadff3', '#058dc7']
           }
+        },
+        pie: {
+          legend: {
+            position: 'right'
+          },
+          pieHole: 0.4
         }
       };
       return merge({}, chartOptions.base, chartOptions[type]);
@@ -428,7 +434,7 @@ Google Chart.
       });
       return target;
     }
+
   }());
 
 </script>
-

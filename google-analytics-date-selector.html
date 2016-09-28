@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
+
 <!--
 Element for selecting the start and end date values for queries inside a
 `<google-analytics-dashboard>` element.
@@ -8,8 +9,8 @@ Element for selecting the start and end date values for queries inside a
     <google-analytics-dashboard>
 
       <google-analytics-date-selector
-        startDate="30daysAgo"
-        endDate="today">
+        start-date="30daysAgo"
+        end-date="today">
       </google-analytics-date-selector>
 
       <google-analytics-chart
@@ -21,20 +22,33 @@ Element for selecting the start and end date values for queries inside a
     </google-analytics-dashboard>
 
 @element google-analytics-date-selector
-@extends google-analytics-base
-@blurb Element for selecting the start and end date values for Google Analytics queries
-@status alpha
+@demo
 @homepage https://googlewebcomponents.github.io/google-analytics
 -->
 
 <dom-module id="google-analytics-date-selector">
+
   <style>
+    :host {
+      display: inline-block;
+    }
+    .control {
+      @apply(--google-analytics-date-selector-control);
+    }
+    label {
+      @apply(--google-analytics-date-selector-label);
+    }
     input {
       color: inherit;
       font: inherit;
       margin: 0;
+      @apply(--google-analytics-date-selector-input);
+    }
+    input:focus {
+      @apply(--google-analytics-date-selector-input-focus);
     }
   </style>
+
   <template>
     <span class="control">
       <label for="startDate">Start Date</label>
@@ -55,7 +69,9 @@ Element for selecting the start and end date values for queries inside a
         max="{{maxEndDate}}">
     </span>
   </template>
+
 </dom-module>
+
 <script>
 
   (function() {
@@ -200,4 +216,3 @@ Element for selecting the start and end date values for queries inside a
   }());
 
 </script>
-

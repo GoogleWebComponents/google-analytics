@@ -1,4 +1,4 @@
 google-analytics
 ================
 
-See the [component page](https://googlewebcomponents.github.io/google-analytics) for more information.
+See the [component page](https://elements.polymer-project.org/elements/google-analytics) for more information.

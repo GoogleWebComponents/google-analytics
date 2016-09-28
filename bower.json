@@ -1,13 +1,13 @@
 {
   "name": "google-analytics",
-  "version": "0.9.0",
+  "version": "1.2.3",
   "description": "Encapsulates Google Analytics dashboard features into web components",
   "homepage": "https://googlewebcomponents.github.io/google-analytics",
   "authors": [
     "Philip Walton <philip@philipwalton.com>"
   ],
   "main": "google-analytics.html",
-  "license": "Apache2",
+  "license": "Apache-2.0",
   "keywords": [
     "google",
     "analytics",
@@ -18,17 +18,16 @@
   ],
   "ignore": [
     "/.*",
-    "/test/",
-    "/demo/"
+    "/test/"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#v0.9.0-rc.1",
-    "promise-polyfill": "polymerlabs/promise-polyfill#v0.9.0",
+    "polymer": "Polymer/polymer#^1.0.0",
+    "promise-polyfill": "PolymerLabs/promise-polyfill#^1.0.0",
     "ga-api-utils": "googleanalytics/javascript-api-utils#^0.2.0",
-    "google-chart": "GoogleWebComponents/google-chart#0.8-preview",
-    "google-signin": "GoogleWebComponents/google-signin#0.8-preview"
+    "google-chart": "GoogleWebComponents/google-chart#^1.0.0",
+    "google-signin": "GoogleWebComponents/google-signin#^1.0.0"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^0.9.1"
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.2"
   }
 }

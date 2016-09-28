@@ -11,22 +11,22 @@ Element for querying the Google Analytics Core Reporting API.
       metrics="ga:sessions"
       dimensions="ga:country"
       sort="-ga:sessions"
-      maxResults="5">
+      max-results="5">
     </google-analytics-query>
 
 @element google-analytics-query
-@extends google-analytics-base
-@blurb Element for querying the Google Analytics Core Reporting API.
-@status alpha
+@demo
 @homepage https://googlewebcomponents.github.io/google-analytics
 -->
 
-
 <dom-module id="google-analytics-query">
+
   <template>
     <google-analytics-loader all-ready="{{setupReady}}"></google-analytics-loader>
   </template>
+
 </dom-module>
+
 <script>
 
   (function() {
@@ -386,4 +386,3 @@ Element for querying the Google Analytics Core Reporting API.
   }());
 
 </script>
-
