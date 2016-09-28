@@ -7,7 +7,7 @@
     "Philip Walton <philip@philipwalton.com>"
   ],
   "main": "google-analytics.html",
-  "license": "Apache2",
+  "license": "Apache-2.0",
   "keywords": [
     "google",
     "analytics",
